@@ -1,7 +1,5 @@
 import { StyleSheet, Pressable, FlatList } from 'react-native';
 import { Link } from 'expo-router';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 
 // Mock data - replace with TMDB API data later
@@ -29,10 +27,8 @@ export default function HomeScreen() {
         data={mockMovies}
         renderItem={renderMovie}
         keyExtractor={(item) => item.id}
-        style={styles.movieList}
-      />
+        style={styles.movieList} />
       
-      <EditScreenInfo path="app/index.tsx" />
     </View>
   );
 }
