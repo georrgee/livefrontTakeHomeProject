@@ -37,10 +37,10 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) return null; 
+  if (!loaded) return
 
   return <RootLayoutNav />;
-};
+}
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
@@ -48,8 +48,21 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="index" options={{ title: 'Home', headerShown: true }} />
-        <Stack.Screen name="[movieId]" options={{ title: 'Movie Details', headerShown: true, headerBackTitle: 'Back' }} />
+        <Stack.Screen 
+          name="index" 
+          options={{ 
+            title: 'Home',
+            headerShown: true 
+          }} 
+        />
+        <Stack.Screen 
+          name="second" 
+          options={{ 
+            title: 'Second Screen',
+            headerShown: true 
+          }} 
+        />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );
