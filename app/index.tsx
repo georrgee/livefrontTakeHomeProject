@@ -1,33 +1,34 @@
 import { StyleSheet, Pressable, FlatList, SafeAreaView } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { Text, View } from '@/components/Themed';
+import { MoviesCarousel } from '@/components/organisms';
+import { Movie } from '@/types';
 
 // Mock data - replace with TMDB API data later
-const mockMovies = [
-  { id: '550', title: 'Fight Club' },
-  { id: '13', title: 'Forrest Gump' },
-  { id: '680', title: 'Pulp Fiction' },
-];
+// const mockMovies = [
+//   { id: '550', title: 'Fight Club' },
+//   { id: '13', title: 'Forrest Gump' },
+//   { id: '680', title: 'Pulp Fiction' },
+// ];
 
 export default function HomeScreen() {
-
-  const renderMovie = ({ item }: { item: typeof mockMovies[0] }) => (
-    <Link href={`/${item.id}`} asChild>
-      <Pressable style={styles.movieItem}>
-        <Text style={styles.movieTitle}>{item.title}</Text>
-      </Pressable>
-    </Link>
-  );
+  
+  const handleMovieSelectedPress = (movie: Movie) => {
+    router.push(`/${movie.id}`);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
 
       <View style={styles.moviesListContainer}>
-        <FlatList
+        {/* <FlatList
           data={mockMovies}
           renderItem={renderMovie}
           keyExtractor={(item) => item.id}
-          style={styles.movieList} />
+          style={styles.movieList} /> */}
+
+        <MoviesCarousel onSelect={handleMovieSelectedPress}/>
       </View>
       
     </SafeAreaView>
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
   },
 
   moviesListContainer: {
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     flex: 1, 
     width: '100%',
   },

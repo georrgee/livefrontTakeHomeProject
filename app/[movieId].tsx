@@ -69,6 +69,7 @@ export default function MovieDetailsScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
+        <Text>{movieId}</Text>
         <Text style={styles.title}>{movie.title}</Text>
         
         <View style={styles.infoRow}>
