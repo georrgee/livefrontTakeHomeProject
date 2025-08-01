@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Pressable, FlatList, SafeAreaView } from 'react-native';
 import { Link } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 
@@ -10,6 +10,7 @@ const mockMovies = [
 ];
 
 export default function HomeScreen() {
+
   const renderMovie = ({ item }: { item: typeof mockMovies[0] }) => (
     <Link href={`/${item.id}`} asChild>
       <Pressable style={styles.movieItem}>
@@ -19,41 +20,46 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>QuikMovies</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+    <SafeAreaView style={styles.container}>
+
+      <View style={styles.moviesListContainer}>
+        <FlatList
+          data={mockMovies}
+          renderItem={renderMovie}
+          keyExtractor={(item) => item.id}
+          style={styles.movieList} />
+      </View>
       
-      <FlatList
-        data={mockMovies}
-        renderItem={renderMovie}
-        keyExtractor={(item) => item.id}
-        style={styles.movieList} />
-      
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
+
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  separator: {
-    marginVertical: 20,
-    height: 1,
-    width: '80%',
+
+  moviesListContainer: {
+    backgroundColor: 'red',
+    flex: 1, 
+    width: '100%',
   },
+
   movieList: {
     width: '100%',
     flex: 1,
   },
+
   movieItem: {
     backgroundColor: '#007AFF',
     padding: 15,
@@ -61,6 +67,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
   },
+
   movieTitle: {
     color: 'white',
     fontSize: 16,

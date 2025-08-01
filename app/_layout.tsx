@@ -23,6 +23,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Lexend: require('../assets/fonts/Lexend-VariableFont_wght.ttf'),
     ...FontAwesome.font,
   });
 
@@ -51,18 +52,16 @@ function RootLayoutNav() {
         <Stack.Screen 
           name="index" 
           options={{ 
-            title: 'Home',
-            headerShown: true 
+            title: 'Popular Movies',
+            headerLargeTitleStyle: { fontFamily: 'Lexend', fontWeight: '700' },
+            //headerTitleStyle: { fontFamily: 'Lexend', fontWeight: '700' },
+            headerShown: true,
+            headerLargeTitle: true,
+            headerTransparent: true
           }} 
         />
-        <Stack.Screen 
-          name="second" 
-          options={{ 
-            title: 'Second Screen',
-            headerShown: true 
-          }} 
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="[movieId]" options={{ title: 'Movie Details', headerShown: true }} />
+        {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
       </Stack>
     </ThemeProvider>
   );
