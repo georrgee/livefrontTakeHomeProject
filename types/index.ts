@@ -1,7 +1,12 @@
-import { Movie } from "./Movie";
-import { MovieResponse } from "./PopularMovieResponse";
+import { Movie, MovieDetails, 
+  Genre, ProductionCompany, SpokenLanguage,
+  PopularMovieResponse } from "./movie.types";
 
 export {
   Movie,
-  MovieResponse
+  MovieDetails,
+  Genre,
+  ProductionCompany,
+  SpokenLanguage,
+  PopularMovieResponse
 }
