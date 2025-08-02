@@ -1,8 +1,8 @@
 import tmdbAPI from "./tmdbAPI";
 import { IMAGE_BASE_URL } from "./tmdbAPI";
 import { MovieDetails, PopularMovieResponse } from "@/types";
-/** @description The business layer; contains the logic for fetching the actual data from the TMDB API */
 
+/** @description The business layer; contains the logic for fetching the actual data from the TMDB API */
 export const movieService = {
   /** 
    * @description Fetches the popular movies
