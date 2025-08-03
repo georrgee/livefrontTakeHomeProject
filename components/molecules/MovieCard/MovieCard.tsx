@@ -65,6 +65,19 @@ function MovieDetails({ movie, onPress }: {
 function CardGradients() {
   return (
     <>
+      {/* Top gradient */}
+      <LinearGradient
+        colors={["rgba(0,0,0,0.7)", "#00000000"]}
+        start={[1, 0]}
+        end={[1, 0.5]}
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          height: ITEM_HEIGHT * 0.3,
+        }} />
+    
       {/* Bottom gradient */}
       <LinearGradient
         colors={["rgba(0,0,0,0.2)", "#00000000"]}
@@ -76,8 +89,8 @@ function CardGradients() {
           right: 0,
           bottom: 0,
           height: ITEM_HEIGHT * 0.3,
-        }}
-      />
+        }} />
+
       {/* Left gradient */}
       <LinearGradient
         colors={["rgba(0,0,0,.6)", "#00000000"]}
@@ -89,8 +102,8 @@ function CardGradients() {
           top: 0,
           bottom: 0,
           width: ITEM_WIDTH * 0.7,
-        }}
-      />
+        }} />
+
       {/* Right gradient */}
       <LinearGradient
         colors={["rgba(0,0,0,.6)", "#00000000"]}
@@ -102,8 +115,7 @@ function CardGradients() {
           top: 0,
           bottom: 0,
           width: ITEM_WIDTH * 0.3,
-        }}
-      />
+        }} />
     </>
   );
 }
@@ -187,7 +199,7 @@ function ParallaxForeground({
           {movie.vote_average.toFixed(1)}
         </Text>
 
-        <Animated.View style={styles.titleContainer}>
+        {/* <Animated.View style={styles.titleContainer}>
           <Text
             ref={ref}
             style={styles.titleText}
@@ -195,7 +207,7 @@ function ParallaxForeground({
             adjustsFontSizeToFit>
             {movie.title}
           </Text>
-        </Animated.View>
+        </Animated.View> */}
       </Animated.View>
     </View>
   );
@@ -366,7 +378,7 @@ const styles = StyleSheet.create({
   },
 
   separator: {
-    marginVertical: SPACING - 10,
+    marginVertical: SPACING - 5,
     marginLeft: -SPACING,
     marginRight: -SPACING,
   },
@@ -424,7 +436,7 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 28,
+    fontSize: 26,
     color: "#fff",
     textTransform: "uppercase",
     fontWeight: "bold",

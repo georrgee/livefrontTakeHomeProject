@@ -7,9 +7,9 @@ export const usePopularMovies = (initialPage: number = 1): UsePopularMovies => {
 
   // * MARK - Hook Variables
   const [popularMovies, setPopularMovies] = useState<PopularMovieResponse | null>(null);
-  const [isLoading, setIsLoading]         = useState<boolean>(true);
-  const [errorMessage, setErrorMessage]   = useState<string | null>(null);
-  const [currentPage, setCurrentPage]     = useState<number>(initialPage);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
   // * MARK - Functions
@@ -20,8 +20,8 @@ export const usePopularMovies = (initialPage: number = 1): UsePopularMovies => {
       if (!append) {
         setIsLoading(true);
       } else {
-        setIsLoading(false);
-      };
+        setIsLoadingMore(true);
+      }
 
       setErrorMessage(null);
 
@@ -35,8 +35,8 @@ export const usePopularMovies = (initialPage: number = 1): UsePopularMovies => {
           }
         }
 
-        return response; 
-    });
+        return response;
+      });
 
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "Failed to fetch popular movies");
@@ -53,15 +53,15 @@ export const usePopularMovies = (initialPage: number = 1): UsePopularMovies => {
   }, [fetchPopularMovies]);
 
   /** @description Function that loads more popular movies*/
-  const loadMorePopularMovies = useCallback( async () => {
-    
+  const loadMorePopularMovies = useCallback(async () => {
+
     const isCurrentPageLessThanTotalPages = popularMovies && currentPage < popularMovies.total_pages && !isLoadingMore;
 
     if (isCurrentPageLessThanTotalPages) {
       const nextPage: number = currentPage + 1;
       setCurrentPage(nextPage);
       await fetchPopularMovies(nextPage, true);
-    };
+    }
   }, [popularMovies, currentPage, isLoadingMore, fetchPopularMovies]);
 
   // * MARK - useEffect Hooks (Component life cycle)
@@ -71,7 +71,8 @@ export const usePopularMovies = (initialPage: number = 1): UsePopularMovies => {
 
   return {
     popularMovies,
-    isLoading: isLoading || isLoadingMore,
+    isLoading,
+    isLoadingMore,
     errorMessage,
     refetchPopularMovies,
     loadMorePopularMovies,

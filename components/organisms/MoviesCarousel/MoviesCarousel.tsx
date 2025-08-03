@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import React, { useState, useCallback } from "react";
+import { ActivityIndicator, View, Dimensions, StyleSheet } from "react-native";
+import { Text } from "@/components/Themed";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -10,102 +11,31 @@ import Animated, {
 import { Movie } from "@/types";
 import { MoviePagination, SwipeUpIndicator } from "@/components/atoms";
 import { MovieCard } from "@/components/molecules";
-
+import { usePopularMovies } from "@/hooks";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
 const SPACING = 16;
 const FULL_SIZE = ITEM_WIDTH + SPACING;
 
-const mockMovies: Movie[] = [
-  {
-    adult: false,
-    backdrop_path: "/path/to/backdrop1.jpg",
-    genre_ids: [28, 12],
-    id: 1001,
-    original_language: "en",
-    original_title: "Skyward Bound",
-    overview: "A young pilot discovers a forgotten civilization in the clouds and must broker peace before war erupts between the sky dwellers and the surface world.",
-    popularity: 87.3,
-    poster_path: "/kqjL17yufvn9OVLyXYpvtyrFfak.jpg", // Example poster path
-    release_date: "2023-11-10",
-    title: "Skyward Bound",
-    video: false,
-    vote_average: 7.8,
-    vote_count: 1245,
-  },
-  {
-    adult: false,
-    backdrop_path: null,
-    genre_ids: [35, 10749],
-    id: 1002,
-    original_language: "en",
-    original_title: "Coffee & Coincidences",
-    overview: "Two strangers keep bumping into each other over coffee; are they meant to be or is it just bad timing? A romantic comedy about fate, love, and really good espresso.",
-    popularity: 45.1,
-    poster_path: "/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg",
-    release_date: "2021-02-14",
-    title: "Coffee & Coincidences",
-    video: false,
-    vote_average: 6.3,
-    vote_count: 512,
-  },
-  {
-    adult: false,
-    backdrop_path: "/path/to/backdrop3.jpg",
-    genre_ids: [27, 53],
-    id: 1003,
-    original_language: "en",
-    original_title: "Whispering Walls",
-    overview: "A renovation crew awakens something malevolent in an old mansion; the walls remember everything, and they're ready to tell their dark secrets.",
-    popularity: 62.0,
-    poster_path: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
-    release_date: "2024-10-31",
-    title: "Whispering Walls",
-    video: false,
-    vote_average: 8.1,
-    vote_count: 2340,
-  },
-  {
-    adult: false,
-    backdrop_path: "/path/to/backdrop4.jpg",
-    genre_ids: [878, 12],
-    id: 1004,
-    original_language: "en",
-    original_title: "Quantum Echo",
-    overview: "When a physicist discovers how to communicate with parallel versions of herself, she must choose between saving her world or saving herself.",
-    popularity: 93.7,
-    poster_path: "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
-    release_date: "2024-03-15",
-    title: "Quantum Echo",
-    video: false,
-    vote_average: 8.5,
-    vote_count: 3021,
-  },
-  {
-    adult: false,
-    backdrop_path: "/path/to/backdrop5.jpg",
-    genre_ids: [16, 10751],
-    id: 1005,
-    original_language: "en",
-    original_title: "The Last Library",
-    overview: "In a world where books are forbidden, a young girl discovers the last secret library and must protect it from those who would destroy knowledge forever.",
-    popularity: 76.2,
-    poster_path: "/5tVlz6MdkZjh8xjFfyuBhCeGZBw.jpg",
-    release_date: "2023-12-08",
-    title: "The Last Library",
-    video: false,
-    vote_average: 7.9,
-    vote_count: 1876,
-  },
-];
-
 const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => {
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [isOpened, setIsOpened] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const activeIndex = useSharedValue(-1);
   const scrollX = useSharedValue(0);
+
+  const {
+    popularMovies,
+    isLoading,
+    isLoadingMore,
+    errorMessage,
+    refetchPopularMovies,
+    loadMorePopularMovies,
+    hasNextPage
+  } = usePopularMovies(currentPage);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -117,23 +47,47 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
     },
   });
 
-  useAnimatedReaction(
-    () => {
-      return activeIndex.value !== -1;
-    },
-    (value) => {
-      if (isOpened === value) {
-        return;
-      }
-      runOnJS(setIsOpened)(value);
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isLoadingMore) {
+      loadMorePopularMovies();
     }
+  }, [hasNextPage, isLoadingMore, loadMorePopularMovies]);
+
+  const onEndReached = useCallback(() => {
+    handleLoadMore();
+  }, [handleLoadMore]);
+
+  useAnimatedReaction(() => {
+    return activeIndex.value !== -1;
+  }, (value) => {
+    if (isOpened === value) return;
+    runOnJS(setIsOpened)(value);
+  }
   );
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#FFD700" />
+        <Text style={styles.loadingText}>Loading movies...</Text>
+      </View>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>Error: {errorMessage}</Text>
+        <Text style={styles.retryText} onPress={refetchPopularMovies}>Tap to retry</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {!isOpened && <MoviePagination data={mockMovies} scrollX={scrollX} />}
+      {!isOpened && <MoviePagination data={popularMovies?.results || []} scrollX={scrollX} />}
       <Animated.FlatList
-        data={mockMovies}
+        data={popularMovies?.results || []}
         horizontal
         contentContainerStyle={[
           {
@@ -165,28 +119,71 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
         onScroll={onScroll}
         scrollEventThrottle={16}
         scrollEnabled={!isOpened}
+
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoadingMore ? (
+          <View style={styles.loadingMoreContainer}>
+            <ActivityIndicator size="small" color="#FFD700" />
+          </View>
+        ) : null}
       />
 
-      {currentIndex < mockMovies.length && (
+      {currentIndex < (popularMovies?.results || []).length && (
         <SwipeUpIndicator
           style={styles.swipeIndicator}
           isOpened={isOpened}
         />
       )}
     </View>
-  );
+  )
 };
-
+    
+    
 export default MoviesCarousel;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  const styles = StyleSheet.create({
 
-  swipeIndicator: {
-    position: "absolute",
-    bottom: 30,
-    alignSelf: "center",
-  },
-});
+    container: {
+      flex: 1,
+    },
+
+    centerContent: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    loadingText: {
+      color: '#FFD700',
+      fontSize: 16,
+      marginTop: 10,
+      fontFamily: 'Lexend',
+    },
+
+    errorText: {
+      color: '#FF6B6B',
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 10,
+      fontFamily: 'Lexend',
+    },
+
+    retryText: {
+      color: '#FFD700',
+      fontSize: 14,
+      textDecorationLine: 'underline',
+      fontFamily: 'Lexend',
+    },
+
+    loadingMoreContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+
+    swipeIndicator: {
+      position: "absolute",
+      bottom: 30,
+      alignSelf: "center",
+    },
+  });

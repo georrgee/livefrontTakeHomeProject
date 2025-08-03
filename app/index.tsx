@@ -10,21 +10,16 @@ export default function HomeScreen() {
 
   const insets = useSafeAreaInsets();
   
-  const handleMovieSelectedPress = (movie: Movie) => {
-    router.push(`/${movie.id}`);
-  }
+  const handleMovieSelectedPress = (movie: Movie) => router.push(`/${movie.id}`);
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }} edges={['bottom', 'left', 'right']}>
-
         <View style={[styles.moviesListContainer, { paddingTop: insets.top + 100 }]}>
           <MoviesCarousel onSelect={handleMovieSelectedPress} />
         </View>
-
       </SafeAreaView>
     </View>
-
   );
 }
 
