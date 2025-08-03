@@ -16,7 +16,7 @@ import {
   GestureDetector,
 } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Star, Calendar, Clock } from 'lucide-react-native';
+import { Star } from 'lucide-react-native';
 import { Movie } from '@/types';
 
 const { width } = Dimensions.get("window");
@@ -34,6 +34,7 @@ export type MovieCardProps = {
   currentIndex: number;
 };
 
+
 function MovieDetails({ movie, onPress }: {
   movie: Movie, onPress?: (movie: Movie) => void }) {
 
@@ -42,57 +43,21 @@ function MovieDetails({ movie, onPress }: {
     }, [movie, onPress]);
 
   return (
-    <View style={{ padding: SPACING }}>
-      <View style={{ gap: SPACING / 2 }}>
-        <View style={styles.detailRow}>
-          <View style={styles.iconRow}>
-            <Star size={18} color='#fff' />
-            <Text style={styles.detailLabel}>Rating</Text>
-          </View>
-          <Text style={styles.detailValue}>
-            {movie.vote_average.toFixed(1)} ★
+    <View style={styles.movieCardDetailsContainer}>
+        <View style={{ paddingTop: SPACING / 2 }}>
+          <Text style={styles.overviewTitle}>Overview</Text>
+          <Text style={styles.overviewText} numberOfLines={4}>
+            {movie.overview}
           </Text>
         </View>
 
-        <View style={styles.detailRow}>
-          <View style={styles.iconRow}>
-            <Calendar size={18} color='#fff' />
-            <Text style={styles.detailLabel}>Release</Text>
-          </View>
-          <Text style={styles.detailValue}>
-            {movie.release_date.slice(0, 4)}
-          </Text>
-        </View>
+      <View style={styles.separator} />
 
-        <View style={styles.detailRow}>
-          <View style={styles.iconRow}>
-            <Clock size={18} color='#fff' />
-            <Text style={styles.detailLabel}>Votes</Text>
-          </View>
-          <Text style={styles.detailValue}>
-            {movie.vote_count.toLocaleString()}
-          </Text>
-        </View>
-      </View>
-
-      {/* Separator */}
-      <View style={styles.separator}>
-        <View style={styles.separatorDark} />
-        <View style={styles.separatorLight} />
-      </View>
-
-      <Pressable onPress={handleReadMorePress}>
-        <Text style={styles.overviewText}>Read more</Text>
-      </Pressable>
-
-      {/* Overview */}
-      <View style={{ paddingTop: SPACING / 2 }}>
-        <Text style={styles.overviewTitle}>Overview</Text>
-        <Text style={styles.overviewText} numberOfLines={4}>
-          {movie.overview}
-        </Text>
-
-      </View>
+      <View style={{ width: '100%', alignItems: 'flex-end' }}>
+        <Pressable onPress={handleReadMorePress}>
+          <Text style={styles.viewMoreDetailsTextStyle}>View more details</Text>
+        </Pressable>   
+      </View>   
     </View>
   );
 }
@@ -102,7 +67,7 @@ function CardGradients() {
     <>
       {/* Bottom gradient */}
       <LinearGradient
-        colors={["rgba(0,0,0,1)", "#00000000"]}
+        colors={["rgba(0,0,0,0.2)", "#00000000"]}
         start={[0, 1]}
         end={[0, 0]}
         style={{
@@ -175,7 +140,7 @@ function ParallaxForeground({
   });
 
   const textStylez = useAnimatedStyle(() => {
-    const textSize = 120; // Approximate width for movie titles
+    const textSize = 120;
     return {
       transform: [
         {
@@ -382,88 +347,88 @@ const MovieCard = memo(function MovieCard({
 export default MovieCard;
 
 const styles = StyleSheet.create({
+
   cardSize: {
     width: ITEM_WIDTH,
     height: ITEM_HEIGHT,
     borderRadius: SPACING,
   },
+
   card: {
     justifyContent: "center",
   },
+
   cardBackground: {
-    backgroundColor: "#000",
+    // backgroundColor: "#000",
+    backgroundColor: "#2A2A2A",
     overflow: "hidden",
     borderRadius: SPACING,
   },
-  detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  iconRow: {
-    gap: SPACING / 4,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  detailLabel: {
-    color: "#fff",
-    fontSize: 14,
-  },
-  detailValue: {
-    color: "#fff",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    fontSize: 14,
-    fontWeight: "600",
-  },
+
   separator: {
-    marginVertical: SPACING,
+    marginVertical: SPACING - 10,
     marginLeft: -SPACING,
     marginRight: -SPACING,
   },
-  separatorDark: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
+
+  movieCardDetailsContainer: {
+    paddingHorizontal: SPACING, 
+    paddingVertical: SPACING + 2, 
+    flexDirection: 'column', 
   },
-  separatorLight: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
+
   overviewTitle: {
     color: "#FFD700",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: '500',
     marginBottom: 8,
+    fontFamily: 'Lexend'
   },
+
   overviewText: {
     color: "#ccc",
     fontSize: 13,
     lineHeight: 18,
+    fontFamily: 'Lexend',
+    fontWeight: '400'
   },
+
+  viewMoreDetailsTextStyle: {
+    color: '#FFD700',
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: 'Lexend',
+    fontWeight: '500'
+  },
+
   ratingText: {
     color: "#FFD700",
     fontSize: 16,
     fontWeight: "bold",
+    fontFamily: 'Lexend',
     position: "absolute",
     right: SPACING,
     top: SPACING + 30,
   },
+
   titleContainer: {
+    //backgroundColor: 'red',
     width: ITEM_HEIGHT,
-    top: ITEM_HEIGHT - 100,
+    top: ITEM_HEIGHT - 10,
+    marginLeft: 5,
     transformOrigin: "0% 0%",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: SPACING,
     transform: [{ rotate: "-90deg" }],
   },
+
   titleText: {
-    fontSize: 42,
+    fontSize: 28,
     color: "#fff",
     textTransform: "uppercase",
     fontWeight: "bold",
     textAlign: "center",
+    fontFamily: 'Lexend'
   },
 });
