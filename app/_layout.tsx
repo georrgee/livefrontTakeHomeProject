@@ -50,7 +50,7 @@ function RootLayoutNav() {
         <Stack.Screen 
           name="index" 
           options={{ 
-            title: 'Popular Movies',
+            title: 'Quik Movies',
             headerLargeTitleStyle: { fontFamily: 'Lexend', fontWeight: '700' },
             headerShown: true,
             headerLargeTitle: true,

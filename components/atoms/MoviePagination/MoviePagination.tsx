@@ -25,7 +25,7 @@ function ProgressIndicator({
   isOpened: boolean;
 }) {
 
-  const ACTIVE_PROGRESS_BAR_COLOR = Colors[useColorScheme() ?? 'light'].progressBarColor;
+  const ACTIVE_PROGRESS_BAR_COLOR = Colors[useColorScheme() ?? 'light'].progressBar;
 
   const progressStyle = useAnimatedStyle(() => {
     const progress = (scrollX.value + 1) / totalItems;

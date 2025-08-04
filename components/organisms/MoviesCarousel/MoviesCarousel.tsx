@@ -9,9 +9,11 @@ import Animated, {
   LinearTransition
 } from "react-native-reanimated";
 import { Movie } from "@/types";
-import { MoviePagination, SwipeUpIndicator } from "@/components/atoms";
+import { MoviePagination, NetworkError, SwipeUpIndicator } from "@/components/atoms";
 import { MovieCard } from "@/components/molecules";
-import { usePopularMovies } from "@/hooks";
+import { usePopularMovies, useNetworkStatus } from "@/hooks";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -26,6 +28,12 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const activeIndex = useSharedValue(-1);
   const scrollX = useSharedValue(0);
+
+  const { isConnected, isInternetReachable } = useNetworkStatus();
+  const colorScheme = useColorScheme();
+  const loadingIndicatorColor = Colors[colorScheme ?? 'light'].refreshIndicator;
+  const textColor = Colors[colorScheme ?? 'light'].text;
+
 
   const {
     popularMovies,
@@ -53,6 +61,8 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
     }
   }, [hasNextPage, isLoadingMore, loadMorePopularMovies]);
 
+  const handleRetry = () => refetchPopularMovies();
+
   const onEndReached = useCallback(() => {
     handleLoadMore();
   }, [handleLoadMore]);
@@ -65,11 +75,19 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
   }
   );
 
+  if (!isConnected || isInternetReachable === false) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <NetworkError onRetry={handleRetry} message="Connect to the internet to discover amazing movies." />
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={[styles.container, styles.centerContent]}>
-        <ActivityIndicator size="large" color="#FFD700" />
-        <Text style={styles.loadingText}>Loading movies...</Text>
+        <ActivityIndicator size="large" color={loadingIndicatorColor} />
+        <Text style={[styles.loadingText, { color: textColor}]}>Loading movies...</Text>
       </View>
     );
   }
@@ -153,7 +171,6 @@ export default MoviesCarousel;
     },
 
     loadingText: {
-      color: '#FFD700',
       fontSize: 16,
       marginTop: 10,
       fontFamily: 'Lexend',

@@ -9,7 +9,6 @@ import { Movie } from '@/types';
 export default function HomeScreen() {
 
   const insets = useSafeAreaInsets();
-  
   const handleMovieSelectedPress = (movie: Movie) => router.push(`/${movie.id}`);
 
   return (
@@ -29,6 +28,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  networkErrorContainer: {
+    flex: 1,
+    width: '100%',
   },
 
   title: {

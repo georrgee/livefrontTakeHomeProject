@@ -1,22 +1,26 @@
 import React, { useMemo } from 'react';
-import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity, RefreshControl } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Star, ChevronLeft} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ExternalLink } from '@/components/ExternalLink';
 import { Text, View } from '@/components/Themed';
 import { useMovieDetails } from '@/hooks';
 import { movieService } from '@/services';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { NetworkError } from '@/components/atoms';
+import { useNetworkStatus } from '@/hooks';
 
 export default function MovieDetailsScreen() {
 
   const router = useRouter();
   const { movieId } = useLocalSearchParams<{ movieId: string }>();
   const { movieDetails, isLoading, errorMessage, refetchMovieDetails } = useMovieDetails(movieId ? parseInt(movieId) : null);
+  const { isConnected, isInternetReachable } = useNetworkStatus();
+
   const colorScheme = useColorScheme();
-  const sectionTitleTextColor = Colors[colorScheme ?? 'light'].sectionTitleText
+  const sectionTitleTextColor = Colors[colorScheme ?? 'light'].sectionTitleText;
+  const refreshIndicatorColor = Colors[colorScheme ?? 'light'].refreshIndicator;
 
   const formatMovieRunTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
@@ -32,6 +36,22 @@ export default function MovieDetailsScreen() {
     return backdropUri ? { uri: backdropUri } : require('../assets/images/placeholder.png')
   }, [backdropUri]);
 
+  const handleRefresh = async () => await refetchMovieDetails();
+  const formatYear = (dateString: string) => new Date(dateString).getFullYear();
+
+  const handleHomepagePress = () => {
+    if (movieDetails?.homepage) {
+      Linking.openURL(movieDetails.homepage);
+    }
+  };
+
+  if (!isConnected || isInternetReachable === false) {
+    return (
+      <View style={styles.centerContainer}>
+        <NetworkError onRetry={() => refetchMovieDetails()} message="Connect to the internet to view movie details." />
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -46,9 +66,32 @@ export default function MovieDetailsScreen() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{errorMessage || 'Movie not found'}</Text>
+        <View style={styles.errorButtonsContainer}>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={refetchMovieDetails}
+            activeOpacity={0.7}>
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButtonError}
+            onPress={() => router.back()}
+            activeOpacity={0.7}>
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
+
+  const renderRefreshControl = () => {
+    return (
+      <RefreshControl 
+        tintColor={refreshIndicatorColor} 
+        refreshing={isLoading} 
+        onRefresh={handleRefresh} />
+    )
+  }
 
   const renderMovieBackdropImage = () => {
     const renderStars = (rating: number) => {
@@ -89,9 +132,6 @@ export default function MovieDetailsScreen() {
       return stars;
     };
 
-    const formatYear = (dateString: string) => {
-      return new Date(dateString).getFullYear();
-    };
 
     return (
       <View style={styles.backdropContainer}>
@@ -102,8 +142,7 @@ export default function MovieDetailsScreen() {
             style={styles.backdropImage}
             resizeMode='cover'
             fadeDuration={300}
-            loadingIndicatorSource={require('../assets/images/placeholder.png')}
-          />
+            loadingIndicatorSource={require('../assets/images/placeholder.png')} />
         )}
 
         <LinearGradient
@@ -150,7 +189,7 @@ export default function MovieDetailsScreen() {
     <View style={styles.container}>
       {renderMovieBackdropImage()}
       <View style={styles.scrollableContent}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} refreshControl={renderRefreshControl()}>
           <View style={styles.content}>
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Overview</Text>
@@ -196,8 +235,7 @@ export default function MovieDetailsScreen() {
                       <Image
                         source={require('../assets/images/placeholder.png')}
                         style={styles.companyLogo}
-                        resizeMode='contain'
-                      />
+                        resizeMode='contain' />
                     }
                     <Text style={styles.companyName}>{company.name}</Text>
                   </View>
@@ -207,9 +245,9 @@ export default function MovieDetailsScreen() {
 
             {movieDetails.homepage && (
               <View style={styles.section}>
-                <ExternalLink href={movieDetails.homepage}>
-                  <Text style={[styles.homepageLink, { color: sectionTitleTextColor }]}>Visit Official Website</Text>
-                </ExternalLink>
+                <TouchableOpacity onPress={handleHomepagePress}>
+                  <Text style={styles.homepageLink}>Visit Official Website</Text>
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -269,7 +307,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontWeight: '400',
+    fontWeight: '500',
     marginRight: 10,
     minWidth: 100,
     fontFamily: 'Lexend',
@@ -278,7 +316,7 @@ const styles = StyleSheet.create({
   value: {
     flex: 1,
     fontFamily: 'Lexend',
-    fontWeight: '300'
+    fontWeight: '400'
   },
 
   section: {
@@ -287,7 +325,7 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 12,
     color: '#FFD700',
     fontFamily: 'Lexend',
@@ -477,5 +515,40 @@ const styles = StyleSheet.create({
 
   headerSpacer: {
     width: 40,
+  },
+
+  errorButtonsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 20,
+  },
+
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+
+  retryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Lexend',
+  },
+
+  backButtonError: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Lexend',
   },
 });
