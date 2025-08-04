@@ -119,7 +119,6 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
         onScroll={onScroll}
         scrollEventThrottle={16}
         scrollEnabled={!isOpened}
-
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={isLoadingMore ? (

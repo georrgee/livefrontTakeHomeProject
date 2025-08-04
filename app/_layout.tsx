@@ -62,8 +62,7 @@ function RootLayoutNav() {
             headerTransparent: true
           }} 
         />
-        <Stack.Screen name="[movieId]" options={{ title: 'Movie Details', headerShown: true }} />
-        {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+        <Stack.Screen name="[movieId]" options={{ title: 'Movie Details', headerShown: false }} />
       </Stack>
     </ThemeProvider>
     </GestureHandlerRootView>

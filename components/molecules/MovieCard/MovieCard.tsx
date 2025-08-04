@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { StyleSheet, Pressable, Dimensions, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -18,6 +18,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Star } from 'lucide-react-native';
 import { Movie } from '@/types';
+import { movieService } from '@/services';
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -129,9 +130,18 @@ function ParallaxForeground({
   index: number;
   scrollX: SharedValue<number>;
 }) {
+
   const scaleFactor = 0.2;
   const _translateX = ITEM_WIDTH * scaleFactor * 2;
   const ref = useAnimatedRef<Text>();
+
+  const posterUri = useMemo(() => {
+    return movieService.getPosterImage(movie.poster_path, 'original');
+  }, [movie.poster_path]);
+
+  const posterSource = useMemo(() => {
+    return posterUri ? { uri: posterUri } : require('../../../assets/images/placeholder.png')
+  }, [posterUri]); 
 
   const imageStylez = useAnimatedStyle(() => {
     return {
@@ -167,22 +177,14 @@ function ParallaxForeground({
     };
   });
 
-  // Mock poster image - replace with actual poster URL
-  const posterUri = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    : 'https://via.placeholder.com/500x750/333/fff?text=No+Poster';
-
   return (
     <View style={[styles.cardSize, styles.cardBackground]}>
+
       <Animated.Image
-        source={{ uri: posterUri }}
-        style={[
-          StyleSheet.absoluteFillObject,
-          { opacity: 1 },
-          imageStylez,
-        ]}
-        resizeMode="cover"
-      />
+        source={posterSource}
+        style={[StyleSheet.absoluteFillObject, { opacity: 1 }, imageStylez]}
+        resizeMode="cover" />
+
       <CardGradients />
       <Animated.View style={[StyleSheet.absoluteFillObject, textStylez]}>
         <Star

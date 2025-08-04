@@ -22,7 +22,9 @@ export interface MovieDetails extends Movie {
   production_companies: ProductionCompany[];
   spoken_languages:     SpokenLanguage[];
   status:               string;
-  tagline:              string; 
+  tagline:              string;
+  homepage:             string;
+  revenue:              number;
 };
 
 export interface Genre {
