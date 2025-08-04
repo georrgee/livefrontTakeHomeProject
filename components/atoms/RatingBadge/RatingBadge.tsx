@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "@/components/Themed";
+import { View, Text } from "@/components/atoms";
 import { RatingBadgeProps } from "./types";
 import { styles } from "./styles";
 /**

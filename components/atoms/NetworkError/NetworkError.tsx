@@ -10,14 +10,15 @@ import { styles } from "./styles";
 const NetworkError: React.FC<NetworkErrorProps> = ({
   onRetry,
   message = "Please check your internet connection and try again.",
-  style
+  style,
+  testID
 }) => {
   
   const colorScheme = useColorScheme();
   const textColor = Colors[colorScheme ?? 'light'].text;
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       <View style={styles.iconContainer}>
         <WifiOff size={48} color={textColor} />
       </View>

@@ -17,6 +17,7 @@ import {
 } from "react-native-gesture-handler";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Star } from 'lucide-react-native';
+import { MovieCardProps } from './types';
 import { Movie } from '@/types';
 import { movieService } from '@/services';
 
@@ -24,17 +25,6 @@ const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
 const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
 const SPACING = 16;
-
-export type MovieCardProps = {
-  movie: Movie;
-  index: number;
-  scrollX: SharedValue<number>;
-  activeIndex: SharedValue<number>;
-  onPress?: (movie: Movie) => void;
-  isOpened: boolean;
-  currentIndex: number;
-};
-
 
 function MovieDetails({ movie, onPress }: {
   movie: Movie, onPress?: (movie: Movie) => void }) {

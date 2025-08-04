@@ -12,7 +12,7 @@ const PosterImage: React.FC<PosterImageProps> = ({ uri, style }) => {
   if (!uri) {
     return (
       <View style={[styles.placeHolder, style]}>
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator testID="activity-indicator" size="large" color="#fff" />
       </View>
     )
   };

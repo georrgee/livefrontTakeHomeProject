@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { View } from '@/components/Themed';
+import { View } from '@/components/atoms';
 import { MoviesCarousel } from '@/components/organisms';
 import { Movie } from '@/types';
 
