@@ -2,31 +2,45 @@ import { memo } from "react";
 import Animated, {
   FadeInDown,
   FadeOutDown,
-  interpolate,
   SharedValue,
   useAnimatedStyle,
+  withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { Movie } from "@/types";
 
-type DotProps = {
-  index: number;
+const ACTIVE_DOT_COLOR = "#FFD700";
+const MAX_VISIBLE_DOTS = 7; // Always odd number for symmetry
+const PROGRESS_BAR_WIDTH = 80;
+const PROGRESS_BAR_HEIGHT = 3;
+
+function ProgressIndicator({
+  scrollX,
+  totalItems,
+  isOpened
+}: {
   scrollX: SharedValue<number>;
-};
+  totalItems: number;
+  isOpened: boolean;
+}) {
+  const progressStyle = useAnimatedStyle(() => {
+    const progress = (scrollX.value + 1) / totalItems;
+    const clampedProgress = Math.max(0, Math.min(1, progress));
 
-const DOT_SIZE = 8;
-const DOT_SPACING = DOT_SIZE * 1.5;
-const DOT_COLOR = "#A5A9AB";
-const INDICATOR_BORDER_COLOR = "#FFD700";
-const INDICATOR_BORDER_SIZE = DOT_SIZE * 0.4;
-
-function Dot({ index, scrollX }: DotProps) {
-  const stylez = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(
-        scrollX.value,
-        [index - 0.5, index, index + 0.5],
-        [1, 0, 1]
-      ),
+      width: withSpring(PROGRESS_BAR_WIDTH * clampedProgress, {
+        damping: 20,
+        stiffness: 100,
+      }),
+    };
+  });
+
+  const containerStyle = useAnimatedStyle(() => {
+    const shouldShow = totalItems > MAX_VISIBLE_DOTS && !isOpened;
+    return {
+      opacity: withTiming(shouldShow ? 1 : 0, {
+        duration: 300,
+      }),
     };
   });
 
@@ -34,44 +48,26 @@ function Dot({ index, scrollX }: DotProps) {
     <Animated.View
       style={[
         {
-          width: DOT_SIZE,
-          height: DOT_SIZE,
-          borderRadius: DOT_SIZE / 2,
-          backgroundColor: DOT_COLOR,
+          width: PROGRESS_BAR_WIDTH,
+          height: PROGRESS_BAR_HEIGHT,
+          backgroundColor: "rgba(255, 255, 255, 0.2)",
+          borderRadius: PROGRESS_BAR_HEIGHT / 2,
+          overflow: "hidden",
+          marginBottom: 12,
         },
-        stylez,
-      ]}
-    />
-  );
-}
-
-function PaginationIndicator({ scrollX }: { scrollX: SharedValue<number> }) {
-  const stylez = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: scrollX.value * (DOT_SIZE + DOT_SPACING),
-        },
-      ],
-    };
-  });
-
-  return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          top: -INDICATOR_BORDER_SIZE,
-          left: -INDICATOR_BORDER_SIZE,
-          width: DOT_SIZE + INDICATOR_BORDER_SIZE * 2,
-          height: DOT_SIZE + INDICATOR_BORDER_SIZE * 2,
-          borderRadius: (DOT_SIZE + INDICATOR_BORDER_SIZE * 2) / 2,
-          borderWidth: INDICATOR_BORDER_SIZE,
-          borderColor: INDICATOR_BORDER_COLOR,
-        },
-        stylez,
-      ]}
-    />
+        containerStyle,
+      ]}>
+      <Animated.View
+        style={[
+          {
+            height: "100%",
+            backgroundColor: ACTIVE_DOT_COLOR,
+            borderRadius: PROGRESS_BAR_HEIGHT / 2,
+          },
+          progressStyle,
+        ]}
+      />
+    </Animated.View>
   );
 }
 
@@ -79,28 +75,29 @@ export const MoviePagination = memo(
   ({
     data,
     scrollX,
+    isOpened = false,
   }: {
     data: Movie[];
     scrollX: SharedValue<number>;
+    isOpened?: boolean;
   }) => {
+
+    const totalItems = data.length;
+
+    if (totalItems <= 1) return null;
+
     return (
       <Animated.View
-        entering={FadeInDown}
-        exiting={FadeOutDown}
-        style={[
-          {
-            flexDirection: "row",
-            gap: DOT_SPACING,
-            position: "absolute",
-            bottom: 100,
-            alignSelf: "center",
-            zIndex: 1,
-          },
-        ]}>
-        {data.map((_, index) => {
-          return <Dot key={`dot-${index}`} index={index} scrollX={scrollX} />;
-        })}
-        <PaginationIndicator scrollX={scrollX} />
+        entering={FadeInDown.duration(400)}
+        exiting={FadeOutDown.duration(300)}
+        style={{
+          position: "absolute",
+          bottom: 100,
+          alignSelf: "center",
+          zIndex: 1,
+          alignItems: "center",
+        }}>
+        <ProgressIndicator scrollX={scrollX} totalItems={totalItems} isOpened={isOpened} />
       </Animated.View>
     );
   }

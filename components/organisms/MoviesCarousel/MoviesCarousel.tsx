@@ -85,7 +85,7 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
 
   return (
     <View style={styles.container}>
-      {!isOpened && <MoviePagination data={popularMovies?.results || []} scrollX={scrollX} />}
+      {!isOpened && <MoviePagination data={popularMovies?.results || []} scrollX={scrollX} /> }
       <Animated.FlatList
         data={popularMovies?.results || []}
         horizontal
