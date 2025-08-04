@@ -10,7 +10,7 @@ import Animated, {
 import { Movie } from "@/types";
 
 const ACTIVE_DOT_COLOR = "#FFD700";
-const MAX_VISIBLE_DOTS = 7; // Always odd number for symmetry
+const MIN_ITEMS_FOR_PROGRESS_BAR = 2; // Show progress bar when there are multiple items
 const PROGRESS_BAR_WIDTH = 80;
 const PROGRESS_BAR_HEIGHT = 3;
 
@@ -36,7 +36,7 @@ function ProgressIndicator({
   });
 
   const containerStyle = useAnimatedStyle(() => {
-    const shouldShow = totalItems > MAX_VISIBLE_DOTS && !isOpened;
+    const shouldShow = totalItems >= MIN_ITEMS_FOR_PROGRESS_BAR && !isOpened;
     return {
       opacity: withTiming(shouldShow ? 1 : 0, {
         duration: 300,
