@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Movie } from "@/types";
 import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from 'react-native';
 
 const MIN_ITEMS_FOR_PROGRESS_BAR = 2; // Show progress bar when there are multiple items
 const PROGRESS_BAR_WIDTH = 80;

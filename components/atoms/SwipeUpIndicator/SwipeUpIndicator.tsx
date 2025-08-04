@@ -11,7 +11,7 @@ import Animated, {
   useSharedValue,
   withSequence
 } from "react-native-reanimated";
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from 'react-native';
 import Colors from "@/constants/Colors";
 
 const SwipeUpIndicator = ({

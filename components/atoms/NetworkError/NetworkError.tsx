@@ -1,8 +1,8 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { WifiOff } from 'lucide-react-native';
-import { Text, View } from '@/components/Themed';
-import { useColorScheme } from '@/components/useColorScheme';
+import { Text, View } from '@/components/atoms'
+import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
 import { NetworkErrorProps } from "./types";
 import { styles } from "./styles";

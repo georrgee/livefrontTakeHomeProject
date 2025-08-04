@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { ActivityIndicator, View, Dimensions, StyleSheet } from "react-native";
-import { Text } from "@/components/Themed";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -9,10 +8,10 @@ import Animated, {
   LinearTransition
 } from "react-native-reanimated";
 import { Movie } from "@/types";
-import { MoviePagination, NetworkError, SwipeUpIndicator } from "@/components/atoms";
+import { MoviePagination, NetworkError, SwipeUpIndicator, Text } from "@/components/atoms";
 import { MovieCard } from "@/components/molecules";
 import { usePopularMovies, useNetworkStatus } from "@/hooks";
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from 'react-native';
 import Colors from "@/constants/Colors";
 
 const { width } = Dimensions.get("window");

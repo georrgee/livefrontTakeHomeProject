@@ -4,7 +4,7 @@ import NetworkError from './NetworkError';
 import PosterImage from './PosterImage';
 import RatingBadge from './RatingBadge';
 import SwipeUpIndicator from './SwipeUpIndicator';
-import TitleText from './TitleText';
+import { Text, View } from './Themed';
 
 export {
   LineSeparator,
@@ -13,5 +13,6 @@ export {
   PosterImage,
   RatingBadge,
   SwipeUpIndicator,
-  TitleText,
+  Text,
+  View
 }

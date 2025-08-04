@@ -3,12 +3,11 @@ import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, T
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Star, ChevronLeft} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Text, View } from '@/components/Themed';
 import { useMovieDetails } from '@/hooks';
 import { movieService } from '@/services';
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
-import { NetworkError } from '@/components/atoms';
+import { NetworkError, Text, View } from '@/components/atoms';
 import { useNetworkStatus } from '@/hooks';
 
 export default function MovieDetailsScreen() {

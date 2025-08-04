@@ -8,10 +8,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "test:ci": "jest --coverage --watchAll=false",
-    "test:unit": "jest --testPathPattern=__tests__",
-    "test:integration": "jest --testPathPattern=integration",
-    "test:e2e": "detox test"
+    "test:ci": "jest --coverage --watchAll=false --verbose",
+    "test:unit": "jest --testPathPattern=__tests__ --watchAll=false",
+    "test:components": "jest --testPathPattern=components/__tests__ --watchAll=false",
+    "test:hooks": "jest --testPathPattern=hooks/__tests__ --watchAll=false",
+    "test:services": "jest --testPathPattern=services/__tests__ --watchAll=false",
+    "test:screens": "jest --testPathPattern=app/__tests__ --watchAll=false",
+    "test:coverage": "jest --coverage --watchAll=false",
+    "test:update-snapshots": "jest --updateSnapshot"
   },
   "jest": {
     "preset": "jest-expo",
@@ -26,10 +30,27 @@
     "collectCoverageFrom": [
       "app/**/*.{ts,tsx}",
       "components/**/*.{ts,tsx}",
+      "hooks/**/*.{ts,tsx}",
       "services/**/*.{ts,tsx}",
-      "utils/**/*.{ts,tsx}",
+      "types/**/*.{ts,tsx}",
       "!**/*.d.ts",
-      "!**/node_modules/**"
+      "!**/node_modules/**",
+      "!**/__tests__/**",
+      "!**/index.{ts,tsx}"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    },
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ]
   },
   "dependencies": {
