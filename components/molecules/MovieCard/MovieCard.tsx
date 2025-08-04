@@ -136,7 +136,7 @@ function ParallaxForeground({
   const ref = useAnimatedRef<Text>();
 
   const posterUri = useMemo(() => {
-    return movieService.getPosterImage(movie.poster_path, 'original');
+    return movieService.getPosterImage(movie.poster_path, 'w1280');
   }, [movie.poster_path]);
 
   const posterSource = useMemo(() => {
@@ -183,7 +183,7 @@ function ParallaxForeground({
       <Animated.Image
         source={posterSource}
         style={[StyleSheet.absoluteFillObject, { opacity: 1 }, imageStylez]}
-        resizeMode="cover" />
+        resizeMode='contain' />
 
       <CardGradients />
       <Animated.View style={[StyleSheet.absoluteFillObject, textStylez]}>
@@ -200,16 +200,6 @@ function ParallaxForeground({
         <Text style={styles.ratingText}>
           {movie.vote_average.toFixed(1)}
         </Text>
-
-        {/* <Animated.View style={styles.titleContainer}>
-          <Text
-            ref={ref}
-            style={styles.titleText}
-            numberOfLines={2}
-            adjustsFontSizeToFit>
-            {movie.title}
-          </Text>
-        </Animated.View> */}
       </Animated.View>
     </View>
   );

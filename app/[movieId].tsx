@@ -2,27 +2,26 @@ import React, { useMemo } from 'react';
 import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Star, ChevronLeft} from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ExternalLink } from '@/components/ExternalLink';
 import { Text, View } from '@/components/Themed';
 import { useMovieDetails } from '@/hooks';
 import { movieService } from '@/services';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
 
 export default function MovieDetailsScreen() {
 
   const router = useRouter();
   const { movieId } = useLocalSearchParams<{ movieId: string }>();
   const { movieDetails, isLoading, errorMessage, refetchMovieDetails } = useMovieDetails(movieId ? parseInt(movieId) : null);
+  const colorScheme = useColorScheme();
+  const sectionTitleTextColor = Colors[colorScheme ?? 'light'].sectionTitleText
 
   const formatMovieRunTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`
-  };
-
-  const handleHomepagePress = () => { 
-    if (movieDetails?.homepage) {
-      Linking.openURL(movieDetails.homepage);
-    }
   };
 
   const backdropUri = useMemo(() => {
@@ -32,6 +31,7 @@ export default function MovieDetailsScreen() {
   const backdropSource = useMemo(() => {
     return backdropUri ? { uri: backdropUri } : require('../assets/images/placeholder.png')
   }, [backdropUri]);
+
 
   if (isLoading) {
     return (
@@ -126,17 +126,16 @@ export default function MovieDetailsScreen() {
 
         <View style={styles.movieInfoOverlay}>
           <Text style={styles.movieTitle}>{movieDetails.title}</Text>
-
           <View style={styles.movieMetaRow}>
             <Text style={styles.movieYear}>{formatYear(movieDetails.release_date)}</Text>
+            <Text style={styles.movieDuration}>{formatMovieRunTime(movieDetails.runtime)}</Text>
             <View style={styles.starsContainer}>
               {renderStars(movieDetails.vote_average)}
             </View>
-            <Text style={styles.movieDuration}>{formatMovieRunTime(movieDetails.runtime)}</Text>
           </View>
 
           <View style={styles.genresContainer}>
-            {movieDetails.genres.slice(0, 2).map((genre, index) => (
+            {movieDetails.genres.slice(0, 2).map((genre) => (
               <View key={genre.id} style={styles.genreTag}>
                 <Text style={styles.genreText}>{genre.name}</Text>
               </View>
@@ -154,12 +153,12 @@ export default function MovieDetailsScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Overview</Text>
+              <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Overview</Text>
               <Text style={styles.overview}>{movieDetails.overview}</Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Details</Text>
+              <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Details</Text>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Release Date:</Text>
                 <Text style={styles.value}>{movieDetails.release_date}</Text>
@@ -184,16 +183,22 @@ export default function MovieDetailsScreen() {
 
             {movieDetails.production_companies && movieDetails.production_companies.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Production Companies</Text>
+                <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Production Companies</Text>
                 {movieDetails.production_companies.map((company) => (
                   <View key={company.name} style={styles.companyRow}>
-                    {company.logo_path && (
+                    {company.logo_path ? (
                       <Image
-                        source={{ uri: `https://image.tmdb.org/t/p/w200${company.logo_path}` }}
+                        source={{ uri: `https://image.tmdb.org/t/p/w500${company.logo_path}` }}
                         style={styles.companyLogo}
                         resizeMode='contain'
                       />
-                    )}
+                    ): 
+                      <Image
+                        source={require('../assets/images/placeholder.png')}
+                        style={styles.companyLogo}
+                        resizeMode='contain'
+                      />
+                    }
                     <Text style={styles.companyName}>{company.name}</Text>
                   </View>
                 ))}
@@ -202,9 +207,9 @@ export default function MovieDetailsScreen() {
 
             {movieDetails.homepage && (
               <View style={styles.section}>
-                <TouchableOpacity onPress={handleHomepagePress}>
-                  <Text style={styles.homepageLink}>Visit Official Website</Text>
-                </TouchableOpacity>
+                <ExternalLink href={movieDetails.homepage}>
+                  <Text style={[styles.homepageLink, { color: sectionTitleTextColor }]}>Visit Official Website</Text>
+                </ExternalLink>
               </View>
             )}
           </View>
@@ -264,7 +269,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontWeight: '600',
+    fontWeight: '400',
     marginRight: 10,
     minWidth: 100,
     fontFamily: 'Lexend',
@@ -273,6 +278,7 @@ const styles = StyleSheet.create({
   value: {
     flex: 1,
     fontFamily: 'Lexend',
+    fontWeight: '300'
   },
 
   section: {
@@ -291,6 +297,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontSize: 16,
     fontFamily: 'Lexend',
+    fontWeight: '400'
   },
 
   companyRow: {
@@ -311,10 +318,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     fontFamily: 'Lexend',
+    fontWeight: '400'
   },
 
   homepageLink: {
-    color: '#FFD700',
+    fontWeight: '500',
     fontSize: 16,
     textDecorationLine: 'underline',
     fontFamily: 'Lexend',
@@ -341,8 +349,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontFamily: 'Lexend',
   },
-
-  //TODO: backdropImage
 
   backdropContainer: {
     position: 'relative',
@@ -373,7 +379,7 @@ const styles = StyleSheet.create({
 
   movieTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '900',
     color: 'white',
     marginBottom: 8,
     fontFamily: 'Lexend',
@@ -394,6 +400,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontFamily: 'Lexend',
+    fontWeight: '300'
   },
 
   starsContainer: {
@@ -406,13 +413,13 @@ const styles = StyleSheet.create({
   starsText: {
     fontSize: 16,
     color: '#FFD700',
-    fontFamily: 'Lexend',
   },
 
   movieDuration: {
     fontSize: 16,
     color: 'white',
     fontFamily: 'Lexend',
+    fontWeight: '300'
   },
 
   genresContainer: {
@@ -433,7 +440,7 @@ const styles = StyleSheet.create({
   genreText: {
     color: 'white',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '400',
     fontFamily: 'Lexend',
   },
 

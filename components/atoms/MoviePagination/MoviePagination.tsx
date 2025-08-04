@@ -8,8 +8,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Movie } from "@/types";
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "@/components/useColorScheme";
 
-const ACTIVE_DOT_COLOR = "#FFD700";
 const MIN_ITEMS_FOR_PROGRESS_BAR = 2; // Show progress bar when there are multiple items
 const PROGRESS_BAR_WIDTH = 80;
 const PROGRESS_BAR_HEIGHT = 3;
@@ -23,6 +24,9 @@ function ProgressIndicator({
   totalItems: number;
   isOpened: boolean;
 }) {
+
+  const ACTIVE_PROGRESS_BAR_COLOR = Colors[useColorScheme() ?? 'light'].progressBarColor;
+
   const progressStyle = useAnimatedStyle(() => {
     const progress = (scrollX.value + 1) / totalItems;
     const clampedProgress = Math.max(0, Math.min(1, progress));
@@ -50,7 +54,7 @@ function ProgressIndicator({
         {
           width: PROGRESS_BAR_WIDTH,
           height: PROGRESS_BAR_HEIGHT,
-          backgroundColor: "rgba(255, 255, 255, 0.2)",
+          backgroundColor: "#818080",
           borderRadius: PROGRESS_BAR_HEIGHT / 2,
           overflow: "hidden",
           marginBottom: 12,
@@ -61,7 +65,7 @@ function ProgressIndicator({
         style={[
           {
             height: "100%",
-            backgroundColor: ACTIVE_DOT_COLOR,
+            backgroundColor: ACTIVE_PROGRESS_BAR_COLOR,
             borderRadius: PROGRESS_BAR_HEIGHT / 2,
           },
           progressStyle,
