@@ -2,6 +2,26 @@
 
 This is a react native mobile application built with Expo that displays popular movies using The Movie Database (TMDB) API. This app features a modern, animated interface with a carousel-style movie browser and a detailed movie screen
 
+## 📋 Table of Contents
+
+1. [🎯 Project Overview](#-project-overview)
+2. [🏗️ Architecture & Features](#️-architecture--features)
+    a. [Screens](#screens)
+    b. [Key Features](#key-features)
+    c. [Technical Stack](#technical-stack)
+3. [🚀 Setup Instructions](#-setup-instructions)
+  a. [Prerequisites](#prerequisites)
+  b. [Installation](#installation)
+  c. [Running on Platforms](#running-on-platforms)
+4. [🧪 Testing](#-testing)
+  a. [Running Tests](#running-tests)
+5. [🔧 Third-Party Libraries](#-third-party-libraries)  
+  a. [Core Dependencies](#core-dependencies)
+  b. [Development Dependencies](#development-dependencies)
+6. [🌐 API Integration](#-api-integration)
+  a. [API Features](#api-features)
+7. [📄 License](#-license)
+
 ## 🎯 Project Overview
 This is a take-home submission for LiveFront that demonstrates:
 - Two-screen architecture : Movie list (carousel) and movie details
@@ -44,7 +64,7 @@ This is a take-home submission for LiveFront that demonstrates:
 ### Installation
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/georrgee/livefrontTakeHomeProject.git
    cd quikMovies
    ```
 2. Install dependencies:
