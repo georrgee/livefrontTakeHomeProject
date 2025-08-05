@@ -1,0 +1,20 @@
+export const SWIPE_INDICATOR_CONFIG = {
+  DEFAULT_SIZE: 24,
+  DEFAULT_OPACITY: 0.3,
+  MARGIN_RATIO: 0.5,
+} as const;
+
+export const SWIPE_ANIMATION_CONFIG = {
+  STAGGER_DELAY: 250,
+  ANIMATION_DURATION: 750,
+  CYCLE_DURATION: 1500,
+
+  ROTATION: {
+    DAMPING: 80,
+    STIFFNESS: 200,
+  },
+
+  FADE: {
+    DURATION: 300,
+  },
+} as const;

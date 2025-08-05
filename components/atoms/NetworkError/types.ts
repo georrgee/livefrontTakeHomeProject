@@ -8,6 +8,6 @@ import { StyleProp, ViewStyle } from "react-native";
 export interface NetworkErrorProps {
   onRetry?: () => void;
   message?: string;
-  style?: StyleProp<ViewStyle>;
-  testID?: string; // Add testID prop
+  style?:   StyleProp<ViewStyle>;
+  testID?:  string; 
 }

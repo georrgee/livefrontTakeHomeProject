@@ -6,6 +6,7 @@ import { View } from '@/components/atoms';
 import { MoviesCarousel } from '@/components/organisms';
 import { Movie } from '@/types';
 
+/** @description The Main Screen where it displays the list of popular movies */
 export default function HomeScreen() {
 
   const insets = useSafeAreaInsets();

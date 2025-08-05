@@ -4,10 +4,11 @@ import { styles } from './styles';
 import { PosterImageProps } from './types';
 /** 
  * @param { string | undefined } uri - The URI of the movie poster image
- * @param { StyleProp<ImageStyle>} style - The style of the movie poster image
+ * @param { StyleProp<ImageStyle> } style - The style of the movie poster image
  * @description **ATOM** component for displaying a movie poster image */
+const PosterImage: React.FC<PosterImageProps> = (props) => {
 
-const PosterImage: React.FC<PosterImageProps> = ({ uri, style }) => {
+  const { uri, style } = props;
 
   if (!uri) {
     return (

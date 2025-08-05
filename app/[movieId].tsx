@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity, RefreshControl } from 'react-native';
+import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Star, ChevronLeft} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,24 +9,22 @@ import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
 import { NetworkError, Text, View } from '@/components/atoms';
 import { useNetworkStatus } from '@/hooks';
+import { formatMovieRunTime, formatYear } from '@/utils';
 
+/** @description Screen that displays the movie details */
 export default function MovieDetailsScreen() {
 
-  const router = useRouter();
+  // * MARK - Hook Variables
+  const router      = useRouter();
   const { movieId } = useLocalSearchParams<{ movieId: string }>();
+
   const { movieDetails, isLoading, errorMessage, refetchMovieDetails } = useMovieDetails(movieId ? parseInt(movieId) : null);
   const { isConnected, isInternetReachable } = useNetworkStatus();
 
-  const colorScheme = useColorScheme();
+  const colorScheme           = useColorScheme();
   const sectionTitleTextColor = Colors[colorScheme ?? 'light'].sectionTitleText;
-  const refreshIndicatorColor = Colors[colorScheme ?? 'light'].refreshIndicator;
 
-  const formatMovieRunTime = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours}h ${remainingMinutes}m`
-  };
-
+  // * MARK - Memoized Variables
   const backdropUri = useMemo(() => {
     return movieService.getBackdropImage(movieDetails?.backdrop_path || '', 'original')
   }, [movieDetails?.backdrop_path]);
@@ -35,106 +33,74 @@ export default function MovieDetailsScreen() {
     return backdropUri ? { uri: backdropUri } : require('../assets/images/placeholder.png')
   }, [backdropUri]);
 
-  const handleRefresh = async () => await refetchMovieDetails();
-  const formatYear = (dateString: string) => new Date(dateString).getFullYear();
-
+  // * MARK - Functions
   const handleHomepagePress = () => {
-    if (movieDetails?.homepage) {
-      Linking.openURL(movieDetails.homepage);
-    }
+    if (movieDetails?.homepage) Linking.openURL(movieDetails.homepage);
   };
 
+  // * MARK - Render Functions
   if (!isConnected || isInternetReachable === false) {
     return (
-      <View style={styles.centerContainer}>
-        <NetworkError onRetry={() => refetchMovieDetails()} message="Connect to the internet to view movie details." />
+      <View style={styles.centerContentContainer}>
+        <NetworkError 
+          onRetry={() => refetchMovieDetails()} 
+          message="Connect to the internet to view movie details." />
       </View>
     );
   }
 
   if (isLoading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={styles.centerContentContainer}>
         <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading movie details...</Text>
+        <Text style={styles.loadingTextStyle}>Loading movie details...</Text>
       </View>
     );
   }
 
   if (errorMessage || !movieDetails) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>{errorMessage || 'Movie not found'}</Text>
+      <View style={styles.centerContentContainer}>
+        <Text style={styles.errorTextStyle}>{errorMessage || 'Movie not found'}</Text>
         <View style={styles.errorButtonsContainer}>
-          <TouchableOpacity
-            style={styles.retryButton}
-            onPress={refetchMovieDetails}
-            activeOpacity={0.7}>
+          <TouchableOpacity style={styles.retryTouchableStyle} onPress={refetchMovieDetails} activeOpacity={0.7}>
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.backButtonError}
-            onPress={() => router.back()}
-            activeOpacity={0.7}>
-            <Text style={styles.backButtonText}>Go Back</Text>
+          <TouchableOpacity style={styles.backTouchableErrorStyle} onPress={() => router.back()} activeOpacity={0.7}>
+            <Text style={styles.backButtonTextStyle}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
   };
 
-  const renderRefreshControl = () => {
-    return (
-      <RefreshControl 
-        tintColor={refreshIndicatorColor} 
-        refreshing={isLoading} 
-        onRefresh={handleRefresh} />
-    )
-  }
-
   const renderMovieBackdropImage = () => {
+
     const renderStars = (rating: number) => {
+
       const stars = [];
       const fullStars = Math.floor(rating / 2);
       const hasHalfStar = (rating / 2) % 1 >= 0.5;
 
       for (let i = 0; i < 5; i++) {
+
         if (i < fullStars) {
-          stars.push(
-            <Star
-              key={i}
-              size={16}
-              color='#FFD700'
-              fill='#FFD700'
-            />
-          );
+          stars.push(<Star key={i} size={16} color='#FFD700' fill='#FFD700' />)
+
         } else if (i === fullStars && hasHalfStar) {
-          stars.push(
-            <Star
-              key={i}
-              size={16}
-              color='#FFD700'
-              fill='none'
-            />
-          );
+          stars.push( <Star key={i} size={16} color='#FFD700' fill='none' />);
+
         } else {
-          stars.push(
-            <Star
-              key={i}
-              size={16}
-              color='#FFD700'
-              fill='none'
-            />
-          );
+          stars.push(<Star key={i} size={16} color='#FFD700' fill='none' />);
         }
       }
       return stars;
     };
 
-
     return (
       <View style={styles.backdropContainer}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+
         {movieDetails.backdrop_path && (
           <Image
             source={backdropSource}
@@ -184,11 +150,23 @@ export default function MovieDetailsScreen() {
     );
   };
 
+  const renderLinkButton = () => {
+    return (
+      <View style={styles.section}>
+        <TouchableOpacity onPress={handleHomepagePress}>
+          <Text style={styles.homepageLink}>Visit Official Website</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  };
+
   return (
     <View style={styles.container}>
+
       {renderMovieBackdropImage()}
+
       <View style={styles.scrollableContent}>
-        <ScrollView showsVerticalScrollIndicator={false} refreshControl={renderRefreshControl()}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Overview</Text>
@@ -242,13 +220,7 @@ export default function MovieDetailsScreen() {
               </View>
             )}
 
-            {movieDetails.homepage && (
-              <View style={styles.section}>
-                <TouchableOpacity onPress={handleHomepagePress}>
-                  <Text style={styles.homepageLink}>Visit Official Website</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            { movieDetails.homepage &&  renderLinkButton() }
           </View>
         </ScrollView>
       </View>
@@ -257,15 +229,13 @@ export default function MovieDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: '#000',
-
   },
 
   scrollableContent: {
     flex: 1,
-    //backgroundColor: '#000',
   },
 
   content: {
@@ -273,118 +243,10 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
 
-  centerContainer: {
+  centerContentContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-    fontFamily: 'Lexend',
-  },
-
-  tagline: {
-    fontSize: 16,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    marginBottom: 20,
-    opacity: 0.8,
-    fontFamily: 'Lexend',
-  },
-
-  basicInfoContainer: {
-    marginBottom: 20,
-  },
-
-  infoRow: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-
-  label: {
-    fontWeight: '500',
-    marginRight: 10,
-    minWidth: 100,
-    fontFamily: 'Lexend',
-  },
-
-  value: {
-    flex: 1,
-    fontFamily: 'Lexend',
-    fontWeight: '400'
-  },
-
-  section: {
-    marginBottom: 25,
-  },
-
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#FFD700',
-    fontFamily: 'Lexend',
-  },
-
-  overview: {
-    lineHeight: 24,
-    fontSize: 16,
-    fontFamily: 'Lexend',
-    fontWeight: '400'
-  },
-
-  companyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-
-  companyLogo: {
-    width: 40,
-    height: 40,
-    marginRight: 12,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-  },
-
-  companyName: {
-    fontSize: 16,
-    flex: 1,
-    fontFamily: 'Lexend',
-    fontWeight: '400'
-  },
-
-  homepageLink: {
-    fontWeight: '500',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    fontFamily: 'Lexend',
-  },
-
-  loadingText: {
-    color: '#FFD700',
-    fontSize: 16,
-    marginTop: 10,
-    fontFamily: 'Lexend',
-  },
-
-  errorText: {
-    color: '#FF6B6B',
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 10,
-    fontFamily: 'Lexend',
-  },
-
-  retryText: {
-    color: '#FFD700',
-    fontSize: 14,
-    textDecorationLine: 'underline',
-    fontFamily: 'Lexend',
   },
 
   backdropContainer: {
@@ -404,6 +266,32 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: '100%',
+  },
+
+  headerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  headerSpacer: {
+    width: 40,
   },
 
   movieInfoOverlay: {
@@ -440,23 +328,18 @@ const styles = StyleSheet.create({
     fontWeight: '300'
   },
 
-  starsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    backgroundColor: 'transparent',
-  },
-
-  starsText: {
-    fontSize: 16,
-    color: '#FFD700',
-  },
-
   movieDuration: {
     fontSize: 16,
     color: 'white',
     fontFamily: 'Lexend',
     fontWeight: '300'
+  },
+
+  starsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    backgroundColor: 'transparent',
   },
 
   genresContainer: {
@@ -481,39 +364,84 @@ const styles = StyleSheet.create({
     fontFamily: 'Lexend',
   },
 
-  headerOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
+  section: {
+    marginBottom: 25,
+  },
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: '#FFD700',
+    fontFamily: 'Lexend',
+  },
+
+  overview: {
+    lineHeight: 24,
+    fontSize: 16,
+    fontFamily: 'Lexend',
+    fontWeight: '400'
+  },
+
+  infoRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+
+  label: {
+    fontWeight: '500',
+    marginRight: 10,
+    minWidth: 100,
+    fontFamily: 'Lexend',
+  },
+
+  value: {
+    flex: 1,
+    fontFamily: 'Lexend',
+    fontWeight: '400'
+  },
+
+  companyRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 50,
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    marginBottom: 12,
   },
 
-  backButton: {
+  companyLogo: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginRight: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
   },
 
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-    fontFamily: 'Lexend',
-    textAlign: 'center',
+  companyName: {
+    fontSize: 16,
     flex: 1,
+    fontFamily: 'Lexend',
+    fontWeight: '400'
   },
 
-  headerSpacer: {
-    width: 40,
+  homepageLink: {
+    fontWeight: '500',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+    fontFamily: 'Lexend',
+  },
+
+  loadingTextStyle: {
+    color: '#FFD700',
+    fontSize: 16,
+    marginTop: 10,
+    fontFamily: 'Lexend',
+  },
+
+  errorTextStyle: {
+    color: '#FF6B6B',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'Lexend',
   },
 
   errorButtonsContainer: {
@@ -522,7 +450,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  retryButton: {
+  retryTouchableStyle: {
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
@@ -536,7 +464,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Lexend',
   },
 
-  backButtonError: {
+  backTouchableErrorStyle: {
     backgroundColor: 'transparent',
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -545,7 +473,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  backButtonText: {
+  backButtonTextStyle: {
     fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Lexend',

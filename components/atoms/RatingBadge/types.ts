@@ -1,6 +1,6 @@
-import { StyleProp, TextStyle } from "react-native";
-/** @description Props for the RatingBadge Atom component */
-
+/**
+ * @param { number } rating The rating value to display
+ * @description Props for the RatingBadge Atom component */
 export interface RatingBadgeProps {
   rating: number;
-}
+};

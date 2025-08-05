@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-
 /** @description Styles for the NetworkError Atom component */
 export const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
     justifyContent: 'center',

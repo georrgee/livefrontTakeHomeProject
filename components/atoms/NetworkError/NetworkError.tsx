@@ -6,13 +6,20 @@ import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
 import { NetworkErrorProps } from "./types";
 import { styles } from "./styles";
+/**
+ * @param { () => void } onRetry The function to call when the user taps the "Try Again" button
+ * @param { string } message The message to display to the user
+ * @param { StyleProp<ViewStyle> } style The style object to apply to the container
+ * @param { string } testID The test ID to use for the container
+ * @description **ATOM** component to display a network error message */
+const NetworkError: React.FC<NetworkErrorProps> = (props) => {
 
-const NetworkError: React.FC<NetworkErrorProps> = ({
-  onRetry,
-  message = "Please check your internet connection and try again.",
-  style,
-  testID
-}) => {
+  const {
+    onRetry,
+    message = "Please check your internet connection and try again",
+    style,
+    testID
+  } = props;
   
   const colorScheme = useColorScheme();
   const textColor = Colors[colorScheme ?? 'light'].text;

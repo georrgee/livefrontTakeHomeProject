@@ -8,8 +8,8 @@ import Animated, {
   LinearTransition
 } from "react-native-reanimated";
 import { Movie } from "@/types";
-import { MoviePagination, NetworkError, SwipeUpIndicator, Text } from "@/components/atoms";
-import { MovieCard } from "@/components/molecules";
+import { NetworkError, Text } from "@/components/atoms";
+import { MovieCard, MoviePagination, SwipeUpAnimatedIndicator } from "@/components/molecules";
 import { usePopularMovies, useNetworkStatus } from "@/hooks";
 import { useColorScheme } from 'react-native';
 import Colors from "@/constants/Colors";
@@ -32,7 +32,6 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
   const colorScheme = useColorScheme();
   const loadingIndicatorColor = Colors[colorScheme ?? 'light'].refreshIndicator;
   const textColor = Colors[colorScheme ?? 'light'].text;
-
 
   const {
     popularMovies,
@@ -146,7 +145,7 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
       />
 
       {currentIndex < (popularMovies?.results || []).length && (
-        <SwipeUpIndicator
+        <SwipeUpAnimatedIndicator
           style={styles.swipeIndicator}
           isOpened={isOpened}
         />
