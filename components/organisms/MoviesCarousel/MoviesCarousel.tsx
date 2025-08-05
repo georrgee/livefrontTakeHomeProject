@@ -13,6 +13,7 @@ import { MovieCard, MoviePagination, SwipeUpAnimatedIndicator } from "@/componen
 import { usePopularMovies, useNetworkStatus } from "@/hooks";
 import { useColorScheme } from 'react-native';
 import Colors from "@/constants/Colors";
+import { styles } from "./styles";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -153,51 +154,5 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
     </View>
   )
 };
-    
-    
+
 export default MoviesCarousel;
-
-  const styles = StyleSheet.create({
-
-    container: {
-      flex: 1,
-    },
-
-    centerContent: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-    loadingText: {
-      fontSize: 16,
-      marginTop: 10,
-      fontFamily: 'Lexend',
-    },
-
-    errorText: {
-      color: '#FF6B6B',
-      fontSize: 16,
-      textAlign: 'center',
-      marginBottom: 10,
-      fontFamily: 'Lexend',
-    },
-
-    retryText: {
-      color: '#FFD700',
-      fontSize: 14,
-      textDecorationLine: 'underline',
-      fontFamily: 'Lexend',
-    },
-
-    loadingMoreContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: 20,
-    },
-
-    swipeIndicator: {
-      position: "absolute",
-      bottom: 30,
-      alignSelf: "center",
-    },
-  });

@@ -21,11 +21,12 @@ tmdbAPI.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-tmdbAPI.interceptors.response.use((response) => response, 
-(error) => {
-  console.error(`from tmdbAPI.ts; TMDB API ERROR: ${error.response?.data || error.message}`)
-  return Promise.reject(error);
-});
-
+tmdbAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('TMDB API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 export default tmdbAPI;

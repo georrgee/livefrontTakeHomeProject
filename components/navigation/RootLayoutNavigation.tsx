@@ -4,6 +4,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from 'expo-router';
 
+/** @description The navigation component that renders the root layout of the app, including the navigation stack */
 const RootLayoutNavigation: React.FC = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

@@ -19,7 +19,6 @@ const MovieCardDetails: React.FC<MovieCardDetailsProps> = (props) => {
 
   return (
     <View style={styles.movieCardDetailsContainer}>
-
       <View style={{ paddingTop: SPACING / 2 }}>
         <Text style={styles.overviewTitleTextStyle}>Overview</Text>
         <Text style={styles.overviewTextStyle} numberOfLines={4}>
@@ -27,7 +26,7 @@ const MovieCardDetails: React.FC<MovieCardDetailsProps> = (props) => {
         </Text>
       </View>
 
-      <LineSeparator />
+      <View style={styles.separator} />
 
       <View style={{ width: '100%', alignItems: 'flex-end' }}>
         <Pressable onPress={handleReadMorePress}>
