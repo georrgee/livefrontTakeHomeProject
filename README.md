@@ -2,6 +2,8 @@
 
 This is a react native mobile application built with Expo that displays popular movies using The Movie Database (TMDB) API. This app features a modern, animated interface with a carousel-style movie browser and a detailed movie screen
 
+![take-home-project](https://github.com/user-attachments/assets/30036504-f01e-4cda-9c3b-56a56d110c3a)
+
 ## 📋 Table of Contents
 - [🎯 Project Overview](#-project-overview)
 - [🏗️ Architecture & Features](#️-architecture--features)
