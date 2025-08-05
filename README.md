@@ -3,24 +3,23 @@
 This is a react native mobile application built with Expo that displays popular movies using The Movie Database (TMDB) API. This app features a modern, animated interface with a carousel-style movie browser and a detailed movie screen
 
 ## 📋 Table of Contents
-
-1. [🎯 Project Overview](#-project-overview)
-2. [🏗️ Architecture & Features](#️-architecture--features)
-    a. [Screens](#screens)
-    b. [Key Features](#key-features)
-    c. [Technical Stack](#technical-stack)
-3. [🚀 Setup Instructions](#-setup-instructions)
-  a. [Prerequisites](#prerequisites)
-  b. [Installation](#installation)
-  c. [Running on Platforms](#running-on-platforms)
-4. [🧪 Testing](#-testing)
-  a. [Running Tests](#running-tests)
-5. [🔧 Third-Party Libraries](#-third-party-libraries)  
-  a. [Core Dependencies](#core-dependencies)
-  b. [Development Dependencies](#development-dependencies)
-6. [🌐 API Integration](#-api-integration)
-  a. [API Features](#api-features)
-7. [📄 License](#-license)
+- [🎯 Project Overview](#-project-overview)
+- [🏗️ Architecture & Features](#️-architecture--features)
+  - [Screens](#screens)
+  - [Key Features](#key-features)
+  - [Technical Stack](#technical-stack)
+- [🚀 Setup Instructions](#-setup-instructions)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running on Platforms](#running-on-platforms)
+- [🧪 Testing](#-testing)
+  - [Running Tests](#running-tests)
+- [🔧 Third-Party Libraries](#-third-party-libraries)
+  - [Core Dependencies](#core-dependencies)
+  - [Development Dependencies](#development-dependencies)
+- [🌐 API Integration](#-api-integration)
+  - [API Features](#api-features)
+- [📄 License](#-license)
 
 ## 🎯 Project Overview
 This is a take-home submission for LiveFront that demonstrates:
