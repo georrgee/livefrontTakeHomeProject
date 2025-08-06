@@ -33,7 +33,7 @@ export const movieService = {
 
   /**
    * @description Helper function that will help us fetch the poster and backdrop image path
-   * @returns { Promise<string | null> } A promise that resolves to the image url where its either a string or null */
+   * @returns { string | null } A string that resolves to the image url where its either a string or null */
   getImageURL: (pathURL: string | null, size: string = 'w500'): string | null => {
     if (!pathURL) return null;
     return `${IMAGE_BASE_URL}/${size}/${pathURL}`
@@ -41,14 +41,14 @@ export const movieService = {
 
   /**
     * @description Function that fetches the poster image at a size of w500 (default)
-    * @returns { Promise<string | null> } A promise that resolves to the poster image url */
+    * @returns { string | null } A string that resolves to the poster image url */
   getPosterImage: (posterPath: string | null, size: string = 'w500'): string | null => {
     return movieService.getImageURL(posterPath, size)
   },
 
   /**
-    * @description Function that fetches the backdrop image at a size of w500 (default)
-    * @returns { Promise<string | null> } A promise that resolves to the poster image url */
+    * @description Function that fetches the backdrop image at a size of w1280 (default)
+    * @returns { string | null } A string that resolves to the backdrop image url */
   getBackdropImage: (backdropPath: string | null, size: string = 'w1280'): string | null => {
     return movieService.getImageURL(backdropPath, size)
   }
