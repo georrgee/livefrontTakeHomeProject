@@ -14,6 +14,7 @@ import { usePopularMovies, useNetworkStatus } from "@/hooks";
 import { useColorScheme } from 'react-native';
 import Colors from "@/constants/Colors";
 import { styles } from "./styles";
+import { ACCESSIBILITY_LABELS, UI_MESSAGES } from "@/constants";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -22,17 +23,18 @@ const FULL_SIZE = ITEM_WIDTH + SPACING;
 
 const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => {
 
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const [isOpened, setIsOpened] = useState(false);
+  const [currentPage, setCurrentPage]   = useState(1);
+  const [isOpened, setIsOpened]         = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const activeIndex = useSharedValue(-1);
-  const scrollX = useSharedValue(0);
+  const scrollX     = useSharedValue(0);
 
   const { isConnected, isInternetReachable } = useNetworkStatus();
   const colorScheme = useColorScheme();
+
   const loadingIndicatorColor = Colors[colorScheme ?? 'light'].refreshIndicator;
-  const textColor = Colors[colorScheme ?? 'light'].text;
+  const textColor             = Colors[colorScheme ?? 'light'].text;
 
   const {
     popularMovies,
@@ -43,6 +45,8 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
     loadMorePopularMovies,
     hasNextPage
   } = usePopularMovies(currentPage);
+
+  const movieCount = popularMovies?.results?.length || 0;
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -76,32 +80,61 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
 
   if (!isConnected || isInternetReachable === false) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <NetworkError onRetry={handleRetry} message="Connect to the internet to discover amazing movies." />
+      <View 
+        style={[styles.container, styles.centerContent]}
+        accessibilityRole="alert"
+        accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.NETWORK_ERROR}>
+        <NetworkError onRetry={handleRetry} message={UI_MESSAGES.NETWORK_ERROR.MOVIES_LIST} />
       </View>
     );
-  }
+  };
 
   if (isLoading) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <ActivityIndicator size="large" color={loadingIndicatorColor} />
-        <Text style={[styles.loadingText, { color: textColor}]}>Loading movies...</Text>
+      <View 
+        accessibilityRole='progressbar'
+        accessibilityLabel={ACCESSIBILITY_LABELS.LOADING.MOVIES_LABEL}
+        accessibilityHint={ACCESSIBILITY_LABELS.LOADING.MOVIES_HINT}
+        style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator 
+          accessibilityLabel={ACCESSIBILITY_LABELS.LOADING.INDICATOR}
+          size="large" 
+          color={loadingIndicatorColor} />
+        <Text 
+          style={[styles.loadingText, { color: textColor}]}>
+            {UI_MESSAGES.LOADING.MOVIES}
+        </Text>
       </View>
     );
   }
 
   if (errorMessage) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Text style={styles.errorText}>Error: {errorMessage}</Text>
-        <Text style={styles.retryText} onPress={refetchPopularMovies}>Tap to retry</Text>
+      <View
+        style={[styles.container, styles.centerContent]}
+        accessibilityRole='alert'
+        accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.GENERAL_ERROR(errorMessage)}>
+        <Text style={styles.errorText} accessibilityRole='header'>
+          {UI_MESSAGES.ERROR.PREFIX}{errorMessage}
+        </Text>
+        <Text
+          style={styles.retryText}
+          onPress={refetchPopularMovies}
+          accessibilityRole='button'
+          accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.RETRY_BUTTON}
+          accessibilityHint={ACCESSIBILITY_LABELS.ERRORS.RETRY_HINT}>
+          {UI_MESSAGES.TEXT.RETRY_BUTTON}
+        </Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View 
+      accessibilityRole='list'
+      accessibilityLabel={ACCESSIBILITY_LABELS.CONTENT.MOVIE_CAROUSEL(movieCount)}
+      accessibilityHint={ACCESSIBILITY_LABELS.PROGRESS.SWIPE_HINT}
+      style={styles.container}>
       {!isOpened && <MoviePagination data={popularMovies?.results || []} scrollX={scrollX} /> }
       <Animated.FlatList
         data={popularMovies?.results || []}
@@ -138,8 +171,13 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
         scrollEnabled={!isOpened}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
+        accessibilityRole='list'
+        accessibilityLabel={ACCESSIBILITY_LABELS.PROGRESS.LOADING_MOVIES}
         ListFooterComponent={isLoadingMore ? (
-          <View style={styles.loadingMoreContainer}>
+          <View 
+            accessibilityRole='progressbar'
+            accessibilityLabel={ACCESSIBILITY_LABELS.PROGRESS.LOADING_MORE}
+            style={styles.loadingMoreContainer}>
             <ActivityIndicator size="small" color="#FFD700" />
           </View>
         ) : null}

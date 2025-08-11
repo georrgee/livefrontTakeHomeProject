@@ -10,6 +10,7 @@ import Colors from '@/constants/Colors';
 import { NetworkError, Text, View } from '@/components/atoms';
 import { useNetworkStatus } from '@/hooks';
 import { formatMovieRunTime, formatYear } from '@/utils';
+import { ACCESSIBILITY_LABELS, UI_MESSAGES } from '@/constants';
 
 /** @description Screen that displays the movie details */
 export default function MovieDetailsScreen() {
@@ -61,14 +62,38 @@ export default function MovieDetailsScreen() {
   if (errorMessage || !movieDetails) {
     return (
       <View style={styles.centerContentContainer}>
+
         <Text style={styles.errorTextStyle}>{errorMessage || 'Movie not found'}</Text>
+
         <View style={styles.errorButtonsContainer}>
-          <TouchableOpacity style={styles.retryTouchableStyle} onPress={refetchMovieDetails} activeOpacity={0.7}>
-            <Text style={styles.retryButtonText}>Retry</Text>
+          <TouchableOpacity 
+            activeOpacity={0.7}
+            accessibilityRole='button'
+            accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.RETRY_BUTTON}
+            accessibilityHint={ACCESSIBILITY_LABELS.ERRORS.RETRY_HINT}
+            onPress={refetchMovieDetails} 
+            style={styles.retryTouchableStyle}>
+
+            <Text style={styles.retryButtonText}>
+              {UI_MESSAGES.NETWORK_ERROR.RETRY_BUTTON}
+            </Text>
+
           </TouchableOpacity>
-          <TouchableOpacity style={styles.backTouchableErrorStyle} onPress={() => router.back()} activeOpacity={0.7}>
-            <Text style={styles.backButtonTextStyle}>Go Back</Text>
+
+          <TouchableOpacity 
+            activeOpacity={0.7}
+            accessibilityRole='button'
+            accessibilityLabel={ACCESSIBILITY_LABELS.NAVIGATION.BACK_BUTTON}
+            accessibilityHint={ACCESSIBILITY_LABELS.NAVIGATION.BACK_BUTTON_HINT}
+            onPress={() => router.back()}
+            style={styles.backTouchableErrorStyle}>
+
+            <Text style={styles.backButtonTextStyle}>
+              {UI_MESSAGES.NAVIGATION.BACK_BUTTON}
+            </Text>
+
           </TouchableOpacity>
+
         </View>
       </View>
     );
@@ -119,13 +144,20 @@ export default function MovieDetailsScreen() {
           colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.6)', 'transparent']}
           locations={[0, 0.5, 1]}
           style={styles.headerOverlay}>
+
           <TouchableOpacity
+            activeOpacity={0.7}
+            accessibilityRole='button'
+            accessibilityLabel={ACCESSIBILITY_LABELS.NAVIGATION.BACK_BUTTON}
+            accessibilityHint={ACCESSIBILITY_LABELS.NAVIGATION.BACK_BUTTON_HINT}
             style={styles.backButton}
-            onPress={() => router.back()}
-            activeOpacity={0.7}>
+            onPress={() => router.back()}>
+
             <ChevronLeft size={24} color="white" />
           </TouchableOpacity>
+
           <View style={styles.headerSpacer} />
+
         </LinearGradient>
 
         <View style={styles.movieInfoOverlay}>
@@ -153,7 +185,10 @@ export default function MovieDetailsScreen() {
   const renderLinkButton = () => {
     return (
       <View style={styles.section}>
-        <TouchableOpacity onPress={handleHomepagePress}>
+        <TouchableOpacity 
+          accessibilityLabel={ACCESSIBILITY_LABELS.NAVIGATION.MOVIE_WEBSITE(movieDetails.title)}
+          accessibilityHint={ACCESSIBILITY_LABELS.NAVIGATION.MOVIE_WEBSITE_HINT(movieDetails.title)}
+          onPress={handleHomepagePress}>
           <Text style={styles.homepageLink}>Visit Official Website</Text>
         </TouchableOpacity>
       </View>

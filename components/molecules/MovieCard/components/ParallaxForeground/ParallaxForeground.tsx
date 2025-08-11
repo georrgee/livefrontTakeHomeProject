@@ -14,11 +14,13 @@ import { ParallaxForegroundProps } from './types';
  * @param { Movie } movie the movie object
  * @param { number } index the index of the movie in the list
  * @param { Animated.SharedValue<number> } scrollX the scrollX value of the list
+ * @param { boolean } accessibilityElementsHidden whether accessibility elements should be hidden
+ * @param { string } importantForAccessibility controls how accessibility services interact with this element
  * @description A component that renders the foreground of a movie card, including the poster image, rating, and title
  */
 const ParallaxForeground: React.FC<ParallaxForegroundProps> = (props) => {
 
-  const { movie, index, scrollX } = props;
+  const { movie, index, scrollX, accessibilityElementsHidden, importantForAccessibility } = props;
 
   const scaleFactor = 0.2;
   const _translateX = CARD_ITEM_WIDTH * scaleFactor * 2;
@@ -66,7 +68,11 @@ const ParallaxForeground: React.FC<ParallaxForegroundProps> = (props) => {
   });
 
   return (
-    <View style={[styles.cardSize, styles.cardBackground]}>
+    <View 
+      style={[styles.cardSize, styles.cardBackground]}
+      accessibilityElementsHidden={accessibilityElementsHidden}
+      importantForAccessibility={importantForAccessibility}>
+
       <Animated.Image
         source={posterSource}
         style={[StyleSheet.absoluteFillObject, { opacity: 1 }, imageStylez]}
@@ -77,6 +83,7 @@ const ParallaxForeground: React.FC<ParallaxForegroundProps> = (props) => {
       <Animated.View style={[StyleSheet.absoluteFillObject, textStylez]}>
         <MovieRating rating={movie.vote_average} spacing={SPACING} />
       </Animated.View>
+      
     </View>
   );
 }

@@ -8,6 +8,8 @@ import MovieCardDetails from './components/MovieCardDetails';
 import ParallaxForeground from './components/ParallaxForeground';
 import { useMovieCardAnimations, useMovieCardGestures } from '@/hooks';
 import { styles } from './styles';
+import { ACCESSIBILITY_LABELS } from '@/constants';
+
 /** @description An animated molecule component that renders a movie card, including the poster image, rating, and title */
 const MovieCard = memo(function MovieCard({
   movie,
@@ -19,8 +21,10 @@ const MovieCard = memo(function MovieCard({
 }: MovieCardProps) {
 
   const ref = useAnimatedRef<View>();
-
   const gesture = useMovieCardGestures(index, activeIndex);
+
+  const isSelected  = currentIndex === index;
+  const hasOverview = Boolean(movie.overview);
 
   const {
     detailsStylez,
@@ -30,7 +34,13 @@ const MovieCard = memo(function MovieCard({
 
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View style={[styles.card, styles.cardSize, cardStylez]}>
+      <Animated.View 
+        accessibilityRole='button'
+        accessibilityLabel={ACCESSIBILITY_LABELS.MOVIE_CARD.CARD_BUTTON(movie.title)}
+        accessibilityHint={ACCESSIBILITY_LABELS.MOVIE_CARD.CARD_HINT(movie.vote_average, hasOverview)}
+        accessibilityState={{ selected: isSelected }}
+        accessible={true}
+        style={[styles.card, styles.cardSize, cardStylez]}>
 
         <Animated.View
           style={[
@@ -69,7 +79,14 @@ const MovieCard = memo(function MovieCard({
             )}
           </Animated.View>
         </Animated.View>
-        <ParallaxForeground index={index} movie={movie} scrollX={scrollX} />
+
+        <ParallaxForeground 
+          accessibilityElementsHidden={true}
+          importantForAccessibility='no-hide-descendants'
+          index={index} 
+          movie={movie} 
+          scrollX={scrollX} />
+          
       </Animated.View>
     </GestureDetector>
   );

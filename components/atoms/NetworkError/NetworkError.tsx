@@ -6,6 +6,7 @@ import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
 import { NetworkErrorProps } from "./types";
 import { styles } from "./styles";
+import { ACCESSIBILITY_LABELS, UI_MESSAGES } from "@/constants";  
 /**
  * @param { () => void } onRetry The function to call when the user taps the "Try Again" button
  * @param { string } message The message to display to the user
@@ -16,7 +17,7 @@ const NetworkError: React.FC<NetworkErrorProps> = (props) => {
 
   const {
     onRetry,
-    message = "Please check your internet connection and try again",
+    message = UI_MESSAGES.NETWORK_ERROR.DEFAULT_MESSAGE,
     style,
     testID
   } = props;
@@ -25,13 +26,19 @@ const NetworkError: React.FC<NetworkErrorProps> = (props) => {
   const textColor = Colors[colorScheme ?? 'light'].text;
 
   return (
-    <View style={[styles.container, style]} testID={testID}>
-      <View style={styles.iconContainer}>
+    <View 
+      accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.NETWORK_ERROR}
+      accessibilityRole='alert'
+      style={[styles.container, style]} 
+      testID={testID}>
+      <View 
+        accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.NO_INTERNET}
+        style={styles.iconContainer}>
         <WifiOff size={48} color={textColor} />
       </View>
 
       <Text style={[styles.title, { color: textColor }]}>
-        No Internet Connection
+        {UI_MESSAGES.NETWORK_ERROR.TITLE}
       </Text>
 
       <Text style={[styles.message, { color: textColor }]}>
@@ -40,10 +47,15 @@ const NetworkError: React.FC<NetworkErrorProps> = (props) => {
 
       {onRetry && (
         <TouchableOpacity
+          accessibilityLabel={ACCESSIBILITY_LABELS.ERRORS.RETRY_BUTTON}
+          accessibilityRole='button'
+          accessibilityHint="Double tap to retry loading content"
           style={styles.retryButton}
           onPress={onRetry}
           activeOpacity={0.7}>
-          <Text style={[styles.retryButtonText, { color: textColor }]}>Try Again</Text>
+          <Text style={[styles.retryButtonText, { color: textColor }]}>
+            {UI_MESSAGES.NETWORK_ERROR.RETRY_BUTTON}
+          </Text>
         </TouchableOpacity>
       )}
     </View>
