@@ -24,14 +24,15 @@ const MovieCardDetails: React.FC<MovieCardDetailsProps> = (props) => {
       accessibilityLabel={ACCESSIBILITY_LABELS.CONTENT.MOVIE_DETAILS_REGION(movie.title)}>
 
         <View style={{ paddingTop: SPACING / 2 }}>
-          <Text style={styles.overviewTitleTextStyle} accessibilityRole='header'>
-              {UI_MESSAGES.TEXT.OVERVIEW_TITLE}
+          <Text accessibilityRole='header' style={styles.overviewTitleTextStyle}>
+            {UI_MESSAGES.TEXT.OVERVIEW_TITLE}
           </Text>
 
           <Text 
             accessibilityRole='text'
             accessibilityLabel={ACCESSIBILITY_LABELS.CONTENT.OVERVIEW_TEXT(movie.overview)}
-            style={styles.overviewTextStyle} numberOfLines={4}>
+            style={styles.overviewTextStyle} 
+            numberOfLines={4}>
             {movie.overview}
           </Text>
       </View>

@@ -181,7 +181,11 @@ export default function MovieDetailsScreen() {
         </LinearGradient>
 
         <View style={styles.movieInfoOverlay}>
-          <Text style={styles.movieTitle}>{movieDetails.title}</Text>
+            <Text 
+              accessibilityRole='header'
+              style={styles.movieTitle}>
+              {movieDetails.title}
+            </Text>
           <View style={styles.movieMetaRow}>
             <Text 
               accessibilityRole='text'
@@ -245,12 +249,12 @@ export default function MovieDetailsScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Overview</Text>
+              <Text accessibilityRole='header' style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Overview</Text>
               <Text style={styles.overview}>{movieDetails.overview}</Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Details</Text>
+              <Text accessibilityRole='header' style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Details</Text>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Release Date:</Text>
                 <Text style={styles.value}>{movieDetails.release_date}</Text>
@@ -275,7 +279,7 @@ export default function MovieDetailsScreen() {
 
             {movieDetails.production_companies && movieDetails.production_companies.length > 0 && (
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Production Companies</Text>
+                <Text accessibilityRole='header' style={[styles.sectionTitle, { color: sectionTitleTextColor }]}>Production Companies</Text>
                 {movieDetails.production_companies.map((company) => (
                   <View key={company.name} style={styles.companyRow}>
                     {company.logo_path ? (

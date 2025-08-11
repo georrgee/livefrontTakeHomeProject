@@ -10,6 +10,7 @@ import { CardGradients, MovieRating } from '@/components/atoms';
 import { CARD_ITEM_HEIGHT, CARD_ITEM_WIDTH, SPACING } from '@/constants';
 import { styles } from './styles';
 import { ParallaxForegroundProps } from './types';
+import { ACCESSIBILITY_LABELS } from '@/constants';
 /**
  * @param { Movie } movie the movie object
  * @param { number } index the index of the movie in the list
@@ -74,6 +75,7 @@ const ParallaxForeground: React.FC<ParallaxForegroundProps> = (props) => {
       importantForAccessibility={importantForAccessibility}>
 
       <Animated.Image
+        accessibilityLabel={ACCESSIBILITY_LABELS.MOVIE_CARD.POSTER_IMAGE(movie.title)}
         source={posterSource}
         style={[StyleSheet.absoluteFillObject, { opacity: 1 }, imageStylez]}
         resizeMode='contain' />
