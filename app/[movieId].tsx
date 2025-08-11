@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
-import { Image, StyleSheet, ScrollView, ActivityIndicator, Linking, StatusBar, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useMemo, useCallback } from 'react';
+import { AccessibilityInfo, Image, StyleSheet, ScrollView, ActivityIndicator, 
+  Linking, StatusBar, TouchableOpacity } from 'react-native';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Star, ChevronLeft} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMovieDetails } from '@/hooks';
@@ -33,6 +34,15 @@ export default function MovieDetailsScreen() {
   const backdropSource = useMemo(() => {
     return backdropUri ? { uri: backdropUri } : require('../assets/images/placeholder.png')
   }, [backdropUri]);
+
+  // * MARK - Accessibility
+  useFocusEffect(
+    useCallback(() => {
+      AccessibilityInfo.announceForAccessibility(
+        ACCESSIBILITY_LABELS.ANNOUNCEMENTS.MOVIE_DETAILS_LOADED(movieDetails?.title || 'No title')
+      )
+    }, [movieDetails])
+  );
 
   // * MARK - Functions
   const handleHomepagePress = () => {
@@ -99,28 +109,38 @@ export default function MovieDetailsScreen() {
     );
   };
 
-  const renderMovieBackdropImage = () => {
+  const renderStars = (rating: number) => {
 
-    const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating / 2);
+    const hasHalfStar = (rating / 2) % 1 >= 0.5;
+    const outOfFive = (rating / 2).toFixed(1);
 
-      const stars = [];
-      const fullStars = Math.floor(rating / 2);
-      const hasHalfStar = (rating / 2) % 1 >= 0.5;
+    for (let i = 0; i < 5; i++) {
 
-      for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        stars.push(<Star key={i} size={16} color='#FFD700' fill='#FFD700' />)
 
-        if (i < fullStars) {
-          stars.push(<Star key={i} size={16} color='#FFD700' fill='#FFD700' />)
+      } else if (i === fullStars && hasHalfStar) {
+        stars.push(<Star key={i} size={16} color='#FFD700' fill='none' />);
 
-        } else if (i === fullStars && hasHalfStar) {
-          stars.push( <Star key={i} size={16} color='#FFD700' fill='none' />);
-
-        } else {
-          stars.push(<Star key={i} size={16} color='#FFD700' fill='none' />);
-        }
+      } else {
+        stars.push(<Star key={i} size={16} color='#FFD700' fill='none' />);
       }
-      return stars;
-    };
+    }
+    
+    return (
+      <View
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`${outOfFive} out of 5 stars, ${rating.toFixed(1)} out of 10`}
+        style={styles.starsContainer}>
+        {stars}
+      </View>
+    );
+  };
+
+  const renderMovieBackdropImage = () => {
 
     return (
       <View style={styles.backdropContainer}>
@@ -163,17 +183,38 @@ export default function MovieDetailsScreen() {
         <View style={styles.movieInfoOverlay}>
           <Text style={styles.movieTitle}>{movieDetails.title}</Text>
           <View style={styles.movieMetaRow}>
-            <Text style={styles.movieYear}>{formatYear(movieDetails.release_date)}</Text>
-            <Text style={styles.movieDuration}>{formatMovieRunTime(movieDetails.runtime)}</Text>
-            <View style={styles.starsContainer}>
+            <Text 
+              accessibilityRole='text'
+              accessibilityLabel={`Release year: ${formatYear(movieDetails.release_date)}`}
+              style={styles.movieYear}>
+              {formatYear(movieDetails.release_date)}
+            </Text>
+              <Text 
+                accessibilityRole='text'
+                accessibilityLabel={`Runtime: ${formatMovieRunTime(movieDetails.runtime)}`}
+                style={styles.movieDuration}>
+                  {formatMovieRunTime(movieDetails.runtime)}
+              </Text>
               {renderStars(movieDetails.vote_average)}
-            </View>
           </View>
 
-          <View style={styles.genresContainer}>
-            {movieDetails.genres.slice(0, 2).map((genre) => (
-              <View key={genre.id} style={styles.genreTag}>
-                <Text style={styles.genreText}>{genre.name}</Text>
+          <View 
+            accessible={true}
+            accessibilityRole='list'
+            accessibilityLabel={`Genres: ${movieDetails.genres.map((genre) => genre.name).join(', ')}`}
+            style={styles.genresContainer}>
+            {movieDetails.genres.slice(0, 2).map((genre, index) => (
+              <View
+                key={genre.id}
+                style={styles.genreTag}
+                accessible={true}
+                accessibilityRole="text"
+                accessibilityLabel={`Genre ${index + 1}: ${genre.name}`}>
+                <Text
+                  style={styles.genreText}
+                  accessibilityElementsHidden={true}>
+                  {genre.name}
+                </Text>
               </View>
             ))}
           </View>

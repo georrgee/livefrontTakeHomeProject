@@ -40,6 +40,23 @@ const MovieCard = memo(function MovieCard({
         accessibilityHint={ACCESSIBILITY_LABELS.MOVIE_CARD.CARD_HINT(movie.vote_average, hasOverview)}
         accessibilityState={{ selected: isSelected }}
         accessible={true}
+        accessibilityActions={[
+          {
+            name: 'swipeUp',
+            label: 'Swipe up to view movie details',
+          },
+          {
+            name: 'swipeDown',
+            label: 'Swipe down to close movie details',
+          }
+        ]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === 'swipeUp') {
+            activeIndex.value + index;
+          } else if (event.nativeEvent.actionName === 'swipeDown') {
+            activeIndex.value = -1
+          }
+        }}
         style={[styles.card, styles.cardSize, cardStylez]}>
 
         <Animated.View

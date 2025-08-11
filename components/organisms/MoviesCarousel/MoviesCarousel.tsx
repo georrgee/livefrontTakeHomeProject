@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { ActivityIndicator, View, Dimensions, StyleSheet } from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
+import { ActivityIndicator, AccessibilityInfo, View, Dimensions } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -48,6 +48,14 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
 
   const movieCount = popularMovies?.results?.length || 0;
 
+  useEffect(() => {
+    if (movieCount) {
+      AccessibilityInfo.announceForAccessibility(
+        ACCESSIBILITY_LABELS.PROGRESS.PROGRESS_INDICATOR(currentIndex + 1, movieCount)
+      )
+    }
+  }, [currentIndex, movieCount]);
+
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollX.value = event.contentOffset.x / FULL_SIZE;
@@ -75,8 +83,7 @@ const MoviesCarousel = ({ onSelect }: { onSelect?: (movie: Movie) => void }) => 
   }, (value) => {
     if (isOpened === value) return;
     runOnJS(setIsOpened)(value);
-  }
-  );
+  });
 
   if (!isConnected || isInternetReachable === false) {
     return (
