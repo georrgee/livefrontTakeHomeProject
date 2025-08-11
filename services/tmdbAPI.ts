@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_KEY  = process.env.EXPO_PUBLIC_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
-export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
 /** @description The foundation layer; contains the axios instance setup with it's configuration (i.e: API Key, Base Url, Image Url) */
 const tmdbAPI = axios.create({

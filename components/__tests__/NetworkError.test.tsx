@@ -2,12 +2,12 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { NetworkError } from '../atoms';
 
+/** @description Test suite for the NetworkError Atom Component */
 describe('NetworkError Atom Component', () => {
-
   it('renders the component with a default message if no custom message is provided', () => {
     const { getByText } = render(<NetworkError />);
     expect(getByText('No Internet Connection')).toBeTruthy();
-    expect(getByText('Please check your internet connection and try again.')).toBeTruthy();
+    expect(getByText('Please check your internet connection and try again')).toBeTruthy();
   });
 
   it('renders the component when there is a custom message', () => {
@@ -41,5 +41,13 @@ describe('NetworkError Atom Component', () => {
     const component = getByTestId('test-network-error-component');
     const styleString = JSON.stringify(component.props.style);
     expect(styleString).toContain('"backgroundColor":"green"');
+  });
+
+  it('renders the component with correct accessibility labels', () => {
+    const { getByLabelText, getByText } = render(<NetworkError />);
+    expect(getByLabelText('Network connection error')).toBeTruthy();
+    expect(getByLabelText('No internet connection available')).toBeTruthy();
+    expect(getByText('No Internet Connection')).toBeTruthy();
+    expect(getByText('Please check your internet connection and try again')).toBeTruthy();
   });
 });

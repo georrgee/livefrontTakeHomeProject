@@ -1,5 +1,5 @@
 import { Movie, MovieDetails, 
-  Genre, ProductionCompany, SpokenLanguage,
+  Genre, ProductionCompany,
   PopularMovieResponse } from "./movie.types";
 
 export {
@@ -7,6 +7,5 @@ export {
   MovieDetails,
   Genre,
   ProductionCompany,
-  SpokenLanguage,
   PopularMovieResponse
 }

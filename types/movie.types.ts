@@ -60,10 +60,12 @@ export interface ProductionCompany {
 
 /**
  * @param { Movie[] } results the array of movies
+ * @param { number } page the current page number
  * @param { number } total_pages the total number of pages
  * @description interface that represents the response of the popular movies request
  */
 export interface PopularMovieResponse {
   results:     Movie[];
+  page:        number;
   total_pages: number;
 };

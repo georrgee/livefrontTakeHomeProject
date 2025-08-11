@@ -2,11 +2,10 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Text, View, useThemeColor } from '@/components/atoms';
 import { renderHook } from '@testing-library/react-native';
+import { useColorScheme } from 'react-native';
 
-/** @description mocks useColorScheme hook */
-jest.mock('../useColorScheme', () => ({
-  useColorScheme: jest.fn(() => 'light'),
-}));
+/** @description mocks the useColorScheme hook */
+const mockUseColorScheme = useColorScheme as jest.MockedFunction<typeof useColorScheme>;
 
 /** @description mocks the Colors constant */
 jest.mock('../../constants/Colors', () => ({
@@ -21,9 +20,11 @@ jest.mock('../../constants/Colors', () => ({
 }));
 
 describe('Test Suites for all Themed Components: Text, View, useThemeColor', () => {
+  beforeEach(() => {
+    mockUseColorScheme.mockReturnValue('light');
+  });
 
-  describe('Test suite for useThemeColor', () => {
-
+  describe('Test suite: useThemeColor', () => {
     it('returns the light color from props when provided', () => {
       const { result } = renderHook(() => useThemeColor({ light: '#ff0000' }, 'text'));
       expect(result.current).toBe('#ff0000');
@@ -35,8 +36,8 @@ describe('Test Suites for all Themed Components: Text, View, useThemeColor', () 
     });
   });
 
+  /**@description Test suite for the Text Atom Component */
   describe('Text Atom Component', () => {
-
     it(`renders the text component with its theme color`, () => {
       const { getByText } = render(<Text>Text Atom Component Test</Text>);
       expect(getByText('Text Atom Component Test')).toBeTruthy();
@@ -52,8 +53,8 @@ describe('Test Suites for all Themed Components: Text, View, useThemeColor', () 
     });
   });
 
+  /**@description Test suite for the View Atom Component */
   describe('View Atom Component', () => {
-
     it('renders the view component with its theme background color', () => {
       const { getByTestId } = render(<View testID="themed-view">Content</View>);
       expect(getByTestId('themed-view')).toBeTruthy();

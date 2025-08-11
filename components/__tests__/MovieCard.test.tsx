@@ -4,6 +4,7 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { MovieDetails } from '@/types';
 import { MovieCardProps } from '../molecules/MovieCard/types';
 
+/** @description Mock component for testing the MovieCard component */
 const MockMovieCard = ({ movie, onPress, isOpened }: MovieCardProps) => {
   return (
     <View>
@@ -47,7 +48,8 @@ const mockMovie: MovieDetails = {
   revenue: 0
 };
 
-describe('MovieCard', () => {
+/** @description Test suite for the MovieCard molecule component */
+describe('MovieCard Molecule Component', () => {
   const defaultProps = {
     movie: mockMovie,
     index: 0,
@@ -57,12 +59,12 @@ describe('MovieCard', () => {
     currentIndex: 0,
   };
 
-  it('renders movie title correctly', () => {
+  it('renders the title of the movie correctly', () => {
     const { getByText } = render(<MockMovieCard {...defaultProps} />);
     expect(getByText('TEST MOVIE')).toBeTruthy();
   });
 
-  it('renders movie overview when expanded', () => {
+  it('renders the overview of a movie after the uses swipes down to expand', () => {
     const { getByText } = render(
       <MockMovieCard {...defaultProps} isOpened={true} currentIndex={0} />
     );
@@ -70,34 +72,33 @@ describe('MovieCard', () => {
     expect(getByText(mockMovie.overview)).toBeTruthy();
   });
 
-  it('renders rating correctly', () => {
+  it('renders the rating of the movie correctly', () => {
     const { getByText } = render(<MockMovieCard {...defaultProps} />);
     expect(getByText('7.5')).toBeTruthy();
   });
 
-  it('calls onPress when "View more details" is pressed', () => {
+  it('calls the onPress function when the user taps the "View more details" button', () => {
     const mockOnPress = jest.fn();
     const { getByText } = render(
       <MockMovieCard
         {...defaultProps}
         onPress={mockOnPress}
         isOpened={true}
-        currentIndex={0}
-      />
+        currentIndex={0} />
     );
 
     fireEvent.press(getByText('View more details'));
     expect(mockOnPress).toHaveBeenCalledWith(mockMovie);
   });
 
-  it('does not render overview when not expanded', () => {
+  it('does not render overview text when not expanded', () => {
     const { queryByText } = render(
       <MockMovieCard {...defaultProps} isOpened={false} />
     );
     expect(queryByText('Overview')).toBeNull();
   });
 
-  it('renders poster image placeholder', () => {
+  it('renders the placeholder image if the movie poster is not available', () => {
     const { getByLabelText } = render(<MockMovieCard {...defaultProps} />);
     const posterImage = getByLabelText('Movie Poster');
     expect(posterImage).toBeTruthy();
