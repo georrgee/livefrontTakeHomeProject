@@ -17,13 +17,16 @@ This is a react native mobile application built with Expo that displays popular 
 - [🏗️ Architecture & Features](#️-architecture--features)
   - [Screens](#screens)
   - [Key Features](#key-features)
+  - [Accessibility Features](#accessibility-features)
   - [Technical Stack](#technical-stack)
 - [🚀 Setup Instructions](#-setup-instructions)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Running on Platforms](#running-on-platforms)
 - [🧪 Testing](#-testing)
+  - [Test Categories](#test-categories)
   - [Running Tests](#running-tests)
+  - [Test Commands](#test-commands)
 - [🔧 Third-Party Libraries](#-third-party-libraries)
   - [Core Dependencies](#core-dependencies)
   - [Development Dependencies](#development-dependencies)
@@ -52,6 +55,13 @@ This is a take-home submission for LiveFront that demonstrates:
 - Responsive Design: Works on both iOS and Android
 - Error Handling: Comprehensive error states and user feedback
 
+### Accessibility Features
+- Semantic Labels: Meaningful accessibility labels and hints for all interactive elements
+- Navigation Announcements: Screen reader announcements for navigation and state changes
+- Focus Management: Proper focus handling for keyboard and screen reader navigation
+- Content Descriptions: Detailed descriptions for movie cards, ratings, and interactive elements
+- State Indicators: Clear indication of selected states and loading states
+
 ### Technical Stack
 - Framework: React Native with Expo
 - Navigation: Expo Router (file-based routing)
@@ -72,13 +82,13 @@ This is a take-home submission for LiveFront that demonstrates:
 
 ### Installation
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/georrgee/livefrontTakeHomeProject.git
    cd quikMovies
    ```
 2. Install dependencies:
    
-   ```
+   ```bash
    npm install
    ```
 3. Set up environment variables: Create a ```.env``` file in the root directory and add your TMDB API key
@@ -93,18 +103,35 @@ npm start
 ```
 ## 🧪 Testing
 The project includes comprehensive tests covering components, hooks, and utilities.
+### Test Categories
+- Unit Tests: Individual component and hook testing
+- Integration Tests: End-to-end user flow testing
+- Accessibility Tests: Screen reader and accessibility compliance testing
+- Service Tests: API and network layer testing
 
 ### Running Tests
-```
+```bash
 # Run all tests in watch mode
 npm test
-
-# Run tests with coverage
-npm run test:ci
-
-# Run only unit tests
-npm run test:unit
 ```
+
+### Test Commands
+```bash
+# Run specific test categories
+npm run test:unit              # Run all unit tests
+npm run test:integration       # Run integration tests
+npm run test:accessibility     # Run accessibility tests
+npm run test:hooks             # Run custom hooks tests
+npm run test:services          # Run API service tests
+```
+
+**Test Coverage Areas:**
+- Component rendering and interaction
+- Custom hooks functionality
+- API service integration
+- Accessibility 
+- User flow integration 
+- Network error handling
 
 ## 🔧 Third-Party Libraries
 ### Core Dependencies
